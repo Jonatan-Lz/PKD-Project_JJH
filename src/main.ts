@@ -11,10 +11,8 @@ const screen = createScreen(100, 20);
 const planetList: List<planet> = list(createPlanet(3, 4, 4),createPlanet(3, 35, 6),createPlanet(6, 14, 18));
 //makes the ship!
 let playerShip: ship = createShip(1, 0, 0, "A", 200);
-//Stop game bool
 let stop: boolean = false;
 
-//This function handles the inputs to move the ship with.
 function handleKeyEvent(event: KeyboardEvent): void {
     const key = event.key;
     switch(key) {
