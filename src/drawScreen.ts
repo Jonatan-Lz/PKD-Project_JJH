@@ -45,7 +45,7 @@ export function printer(world: world): string{
 } 
 
 /**
- * 
+ * Draws a circle in a given world
  * @param world world to draw on
  * @param radius radius of the planet
  * @param x x-coordinate of the planet center
