@@ -48,6 +48,10 @@ function drawString(world: world, x: number, y: number, sprite: string): void{
     world[y][x] = sprite;
 }
 export function drawScreen(world: world, planetList: List<planet>, x:number, y:number, ship: ship){
+    const halfWidth = Math.floor(world[0].length/2);
+    const halfHeight = Math.floor(world.length/2);
+    x = x - halfWidth;
+    y = y - halfHeight;
     clearScreen(world);
     let newPlanetList = planetList;
     while(!is_null(newPlanetList)){
@@ -55,6 +59,5 @@ export function drawScreen(world: world, planetList: List<planet>, x:number, y:n
         drawCircle(world, planet.radius, get_x(planet) - x, get_y(planet) - y, get_sprite(planet));
         newPlanetList = tail(newPlanetList);
     }
-    drawString(world, Math.floor(world[0].length/2), Math.floor(world.length/2), get_sprite(ship));
-    console.log(world);
+    drawString(world, halfWidth, halfHeight, get_sprite(ship));
 }
