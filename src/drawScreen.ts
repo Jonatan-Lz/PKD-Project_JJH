@@ -78,7 +78,7 @@ function drawString(world: world, x: number, y: number, sprite: string): void{
  * @param y 
  * @param ship 
  */
-export function drawScreen(world: world, planetList: List<planet>, ship: ship){
+export function drawScreen(world: world, planetList: List<planet>, ship: ship): void{
     const halfWidth = Math.floor(world[0].length/2);
     const halfHeight = Math.floor(world.length/2);
     let ship_x = get_x(ship);
