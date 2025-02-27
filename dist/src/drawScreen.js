@@ -37,7 +37,7 @@ export function printer(world) {
     let screen = "";
     for (let y = 0; y < world.length; y++) {
         for (let x = 0; x < world[y].length; x++) {
-            screen = screen + world[y][x];
+            screen = screen + " " + world[y][x];
         }
         screen = screen + "<br>";
     }
