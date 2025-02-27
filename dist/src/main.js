@@ -5,9 +5,8 @@ import { createPlanet } from "./planet.js";
 import { createShip } from "./ship.js";
 import { change_location, get_x, get_y } from "./types.js";
 const screen = createScreen();
-const planetList = list(createPlanet(3, 4, 4), createPlanet(3, 35, 6), createPlanet(6, 14, 18));
+const planet_list = list(createPlanet(3, 4, 4), createPlanet(3, 35, 6), createPlanet(6, 14, 18));
 let playerShip = createShip(1, 0, 0, "A", 200);
-let stop = false;
 function handleKeyEvent(event) {
     const key = event.key;
     switch (key) {
@@ -31,21 +30,13 @@ function handleKeyEvent(event) {
             playerShip.yVel = 0;
             break;
     }
-}
-function simulate() {
-    let newPlanetList = planetList;
-    while (!is_null(newPlanetList)) {
-        const planet = head(newPlanetList);
-        if (collision(planet, playerShip)) {
-            stop = true;
-        }
-        newPlanetList = tail(newPlanetList);
+    else if (key === "w") {
+        change_location(playerShip, get_x(playerShip), get_y(playerShip) - 1);
     }
-}
-function tick() {
-    change_location(playerShip, get_x(playerShip) + playerShip.xVel, get_y(playerShip) + playerShip.yVel);
-    drawScreen(screen, planetList, get_x(playerShip), get_y(playerShip), playerShip);
-    simulate();
+    else if (key === "s") {
+        change_location(playerShip, get_x(playerShip), get_y(playerShip) + 1);
+    }
+    drawScreen(screen, planet_list, get_x(playerShip), get_y(playerShip), playerShip);
     const output = document.getElementById('output');
     output.innerHTML = printer(screen);
     if (!stop) {
