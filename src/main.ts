@@ -4,9 +4,14 @@ import { createPlanet } from "./planet.js";
 import { createShip } from "./ship.js";
 import { change_location, get_x, get_y, planet, ship } from "./types.js";
 
-const screen = createScreen();
+//creates a screen
+const screen = createScreen(100, 20);
+//creates planets and puts them in a list
 const planet_list: List<planet> = list(createPlanet(3, 4, 4),createPlanet(3, 35, 6),createPlanet(6, 14, 18));
+//makes the ship!
 let playerShip: ship = createShip(1, 0, 0, "A", 200);
+
+//This function handles the inputs to move the ship with.
 function handleKeyEvent(event: KeyboardEvent): void {
     const key = event.key;
     if(key === "d"){

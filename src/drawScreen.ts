@@ -1,17 +1,20 @@
 import{ length, List, is_null, head, tail } from "../lib/list.js"
 import{ get_x, get_y,get_sprite, planet, world, ship } from "./types.js"
 
-//creates a screen for graphics to be written on
-export function createScreen(): world {
+/**
+ * Creates and returns an empty world
+ * @returns an empty world
+ */
+export function createScreen(width: number, height: number): world {
     let screen: world = [[]];
     let b: Array<string> = [];
-    for(let x = 0; x < 100; x++){
+    for(let x = 0; x < width; x++){
         b.push("_");
     }
     screen[0] = b;
-    for(let y = 1; y < 20; y++){
+    for(let y = 1; y < height; y++){
         b = [];
-        for(let x = 0; x < 100; x++){
+        for(let x = 0; x < width; x++){
             b.push("_");
         }
         screen.push(b);
@@ -62,9 +65,11 @@ function drawCircle(world: world, radius: number, x: number, y: number, sprite: 
     }
 }
 
+//writes the sprite on designated coordinates, on given world.
 function drawString(world: world, x: number, y: number, sprite: string): void{
     world[y][x] = sprite;
 }
+
 /**
  * Draws the world on the document
  * @param world world to draw
