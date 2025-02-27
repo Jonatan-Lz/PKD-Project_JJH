@@ -14,23 +14,20 @@ export type bullet = {tag: "bullet", team: boolean, gameObject: gameObject,
                xVel: number, yVel: number, lifeTime: number}
                //team true is friendly, false is enemy. lifeTime is ticks left until despawn
 export type planet = {tag: "planet", gameObject: gameObject, radius: number}
+export type generalObject = ship|planet|turret|bullet;
 
-export function get_x(object: ship|turret|bullet|planet): number{
+export function get_x(object: generalObject): number{
     return head(object.gameObject.location);
 }
 
-export function change_x(object: ship|turret|bullet|planet, x: number): number{
-    return head(object.gameObject.location);
-}
-
-export function get_y(object: ship|turret|bullet|planet): number{
+export function get_y(object: generalObject): number{
     return tail(object.gameObject.location);
 }
 
-export function change_location(object: ship|turret|bullet|planet, x: number, y: number): void{
+export function change_location(object: generalObject, x: number, y: number): void{
     object.gameObject.location = pair(x, y);
 }
 
-export function get_sprite(object: ship|turret|bullet|planet): string{
+export function get_sprite(object: generalObject): string{
     return object.gameObject.sprite
 }
