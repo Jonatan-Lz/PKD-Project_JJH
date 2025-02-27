@@ -11,29 +11,31 @@ export type planet = {tag: "planet", gameObject: gameObject, radius: number}
 //type color = {red: number, green: number, blue: number, alpha: number};
 
 type gameObject = {
-color: null
-location: Pair<number, number> //head is x coordinate, tail is y coordinate
-hitbox: number  //the radius of the hitbox circle with object in center
-rotAngle: number //rotation angle counter-clockwise
-hp: number //planets and bullet have hp = 1 or 0
-sprite: string };
+    color: null
+    location: Pair<number, number> //head is x coordinate, tail is y coordinate
+    hitbox: number  //the radius of the hitbox circle with object in center
+    rotAngle: number //rotation angle counter-clockwise
+    hp: number //planets and bullet have hp = 1 or 0
+    sprite: string 
+};
 
+
+//gets x-coordinate of object
 export function get_x(object: ship|turret|bullet|planet): number{
     return head(object.gameObject.location);
 }
 
-export function change_x(object: ship|turret|bullet|planet, x: number): number{
-    return head(object.gameObject.location);
-}
-
+//gets y-coordinate of object
 export function get_y(object: ship|turret|bullet|planet): number{
     return tail(object.gameObject.location);
 }
 
+//move object to given coordinates
 export function change_location(object: ship|turret|bullet|planet, x: number, y: number): void{
     object.gameObject.location = pair(x, y);
 }
 
+//get sprite of object
 export function get_sprite(object: ship|turret|bullet|planet): string{
     return object.gameObject.sprite
 }
