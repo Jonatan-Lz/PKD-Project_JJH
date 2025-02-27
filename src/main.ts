@@ -1,19 +1,21 @@
 import { head, is_null, list, List, tail } from "../lib/list.js";
 import { createScreen, drawScreen, printer} from "./drawScreen.js";
-import { collision } from "./generalFunction.js";
+import { collision, collisionForEach } from "./generalFunction.js";
 import { createPlanet } from "./planet.js";
 import { createShip } from "./ship.js";
-import { change_location, get_x, get_y, planet, ship } from "./types.js";
+import { bullet, change_location, get_x, get_y, planet, ship } from "./types.js";
 
 //creates a screen
-const screen = createScreen(100, 20);
+const screen = createScreen(100, 50);
 //creates planets and puts them in a list
-const planetList: List<planet> = list(createPlanet(3, 4, 4),createPlanet(3, 35, 6),createPlanet(6, 14, 18));
+let planetList: List<planet> = list(createPlanet(3.21, 4.3, 4.1),createPlanet(3.3, 35.23, 6.12),createPlanet(6.42, 14.2, 18.5));
+//creates an empty bullet list
+let bulletList: List<bullet> = null;
 //makes the ship!
 let playerShip: ship = createShip(1, 0, 0, "A", 200);
 let stop: boolean = false;
 
-function handleKeyEvent(event: KeyboardEvent): void {
+function handleKeyDownEvent(event: KeyboardEvent): void {
     const key = event.key;
     switch(key) {
         case "d":
@@ -38,14 +40,23 @@ function handleKeyEvent(event: KeyboardEvent): void {
       } 
 }
 
+function handleKeyUpEvent(event: KeyboardEvent): void {
+    const key = event.key;
+    switch(key) {
+        case "d":
+        case "a":
+            playerShip.xVel = 0;
+            break;
+        case "w":
+        case "s":
+            playerShip.yVel = 0;
+            break;
+      } 
+}
+
 function simulate(){
-    let newPlanetList = planetList;
-    while(!is_null(newPlanetList)){
-        const planet = head(newPlanetList);
-        if(collision(planet, playerShip)){
-            stop = true;
-        }
-        newPlanetList = tail(newPlanetList);
+    if(0 <= collisionForEach(playerShip, planetList)){
+        stop = true;
     }
 }
 
@@ -62,4 +73,5 @@ function tick(){
     }
 }
 tick();
-document.addEventListener('keydown', handleKeyEvent);
+document.addEventListener('keydown', handleKeyDownEvent);
+document.addEventListener('keyup', handleKeyUpEvent);
