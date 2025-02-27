@@ -1,4 +1,5 @@
 import { generalObject, get_x, get_y } from "./types.js";
+import {} from "../lib/list.js"
 
 export function collision(object1: generalObject, object2: generalObject): boolean {
     //Checks if the distance between the objects is smaller/equal to their combined hitbox radius

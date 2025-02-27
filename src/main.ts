@@ -33,6 +33,7 @@ function handleKeyEvent(event: KeyboardEvent): void {
             break;
       } 
 }
+
 function simulate(){
     let newPlanetList = planetList;
     while(!is_null(newPlanetList)){
