@@ -1,5 +1,6 @@
-import { list, List } from "../lib/list.js";
+import { head, is_null, list, List, tail } from "../lib/list.js";
 import { createScreen, drawScreen, printer} from "./drawScreen.js";
+import { collision } from "./generalFunction.js";
 import { createPlanet } from "./planet.js";
 import { createShip } from "./ship.js";
 import { change_location, get_x, get_y, planet, ship } from "./types.js";
@@ -7,24 +8,58 @@ import { change_location, get_x, get_y, planet, ship } from "./types.js";
 //creates a screen
 const screen = createScreen(100, 20);
 //creates planets and puts them in a list
-const planet_list: List<planet> = list(createPlanet(3, 4, 4),createPlanet(3, 35, 6),createPlanet(6, 14, 18));
+const planetList: List<planet> = list(createPlanet(3, 4, 4),createPlanet(3, 35, 6),createPlanet(6, 14, 18));
 //makes the ship!
 let playerShip: ship = createShip(1, 0, 0, "A", 200);
+let stop: boolean = false;
 
-//This function handles the inputs to move the ship with.
 function handleKeyEvent(event: KeyboardEvent): void {
     const key = event.key;
-    if(key === "d"){
-        change_location(playerShip, get_x(playerShip) + 1, get_y(playerShip));
-    } else if(key === "a"){
-        change_location(playerShip, get_x(playerShip) - 1, get_y(playerShip));
-    } else if(key === "w"){
-        change_location(playerShip, get_x(playerShip), get_y(playerShip) - 1);
-    } else if(key === "s"){
-        change_location(playerShip, get_x(playerShip), get_y(playerShip) + 1);
+    switch(key) {
+        case "d":
+            playerShip.xVel = 0.3;
+            break;
+        case "a":
+            playerShip.xVel = -0.3;
+            break;
+        case "w":
+            playerShip.yVel = -0.3;
+            break;
+        case "s":
+            playerShip.yVel = 0.3;
+            break;
+        case "p":
+            stop = true;
+            break;
+        case "r":
+            playerShip.xVel = 0;
+            playerShip.yVel = 0;
+            break;
+      } 
+}
+
+function simulate(){
+    let newPlanetList = planetList;
+    while(!is_null(newPlanetList)){
+        const planet = head(newPlanetList);
+        if(collision(planet, playerShip)){
+            stop = true;
+        }
+        newPlanetList = tail(newPlanetList);
     }
-    drawScreen(screen, planet_list, playerShip);
+}
+
+function tick(){
+    change_location(playerShip,
+                    get_x(playerShip) + playerShip.xVel, 
+                    get_y(playerShip) + playerShip.yVel);
+    drawScreen(screen, planetList, playerShip);
+    simulate();
     const output = document.getElementById('output') as HTMLParagraphElement; 
     output.innerHTML = printer(screen);
+    if(!stop){
+        setTimeout(tick, 100);
+    }
 }
+tick();
 document.addEventListener('keydown', handleKeyEvent);
