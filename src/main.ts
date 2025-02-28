@@ -2,11 +2,11 @@ import { head, is_null, list, List, tail } from "../lib/list.js";
 import { createScreen, drawScreen, printer} from "./drawScreen.js";
 import { collision, collisionForEach } from "./generalFunction.js";
 import { createPlanet } from "./planet.js";
-import { createShip, movement } from "./ship.js";
+import { createShip, ship_rotation_sprite, movement} from "./ship.js";
 import { bullet, change_location, get_x, get_y, planet, ship } from "./types.js";
 
 //creates a screen
-const screen = createScreen(100, 50);
+const screen = createScreen(105, 40);
 //creates planets and puts them in a list
 let planetList: List<planet> = list(createPlanet(3.21, 4.3, 4.1),createPlanet(3.3, 35.23, 6.12),createPlanet(6.42, 14.2, 18.5));
 //creates an empty bullet list
@@ -15,8 +15,12 @@ let bulletList: List<bullet> = null;
 let playerShip: ship = createShip(0.5, 0, 0, "A", 200);
 let stop: boolean = false;
 
+//handles input.
+//WASD -> ship movement
+//p -> pause
+//r -> stop ship
 function handleKeyDownEvent(event: KeyboardEvent): void {
-    const key = event.key;
+    const key: string = event.key;
     switch(key) {
         case "d":
         case "a":
@@ -32,27 +36,33 @@ function handleKeyDownEvent(event: KeyboardEvent): void {
       } 
 }
 
+//handles what happens when you let
+//go of a key.
 function handleKeyUpEvent(event: KeyboardEvent): void {
 }
 
-function simulate(){
+//simulates what happens in the world.
+function simulate(): void{
     if(0 <= collisionForEach(playerShip, planetList)){
         stop = true;
     }
+    change_location(playerShip,
+        get_x(playerShip) + playerShip.xVel, 
+        get_y(playerShip) + playerShip.yVel);
+    ship_rotation_sprite(playerShip);
 }
 
-function tick(){
-    change_location(playerShip,
-                    get_x(playerShip) + playerShip.xVel, 
-                    get_y(playerShip) + playerShip.yVel);
+//ticker function. Continously calls upon itself, and
+//draws the world on the website for each tick.
+function ticker(): void{
     drawScreen(screen, planetList, playerShip);
     simulate();
     const output = document.getElementById('output') as HTMLParagraphElement; 
     output.innerHTML = printer(screen);
     if(!stop){
-        setTimeout(tick, 100);
+        setTimeout(ticker, 100);
     }
 }
-tick();
+ticker();
 document.addEventListener('keydown', handleKeyDownEvent);
 document.addEventListener('keyup', handleKeyUpEvent);
