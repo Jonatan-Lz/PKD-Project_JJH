@@ -5,7 +5,7 @@ import { createPlanet } from "./planet.js";
 import { createShip } from "./ship.js";
 import { change_location, get_x, get_y } from "./types.js";
 //creates a screen
-const screen = createScreen(100, 20);
+const screen = createScreen(105, 40);
 //creates planets and puts them in a list
 const planetList = list(createPlanet(3, 4, 4), createPlanet(3, 35, 6), createPlanet(6, 14, 18));
 //makes the ship!
