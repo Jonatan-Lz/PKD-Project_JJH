@@ -1,4 +1,4 @@
-import{ Pair, head, pair, tail } from "../lib/list.js"
+import{ List, Pair, head, pair, tail } from "../lib/list.js"
 
 //A world is defined as a 2-dimensional array with each index as a letter, to signal what is there.
 export type world = Array<Array<string>>;
@@ -10,12 +10,14 @@ type gameObject = {
     hp: number //planets and bullet have hp = 1 or 0
     sprite: string 
 };
-export type ship = {tag: "ship", gameObject: gameObject, xVel: number, yVel: number}
-export type turret = {tag: "turret", gameObject: gameObject}
+export type chunks = {[key: string]: chunk}; // refer to a specific chunk by "x,y"
+export type chunk = {planets: List<planet>, bullets: List<bullet>, turrets: List<turret>};
+export type ship = {tag: "ship", gameObject: gameObject, xVel: number, yVel: number};
+export type turret = {tag: "turret", gameObject: gameObject};
 export type bullet = {tag: "bullet", team: boolean, gameObject: gameObject, 
-               xVel: number, yVel: number, lifeTime: number}
+               xVel: number, yVel: number, lifeTime: number};
                //team true is friendly, false is enemy. lifeTime is ticks left until despawn
-export type planet = {tag: "planet", gameObject: gameObject, radius: number}
+export type planet = {tag: "planet", gameObject: gameObject, radius: number};
 export type generalObject = ship|planet|turret|bullet;
 
 //gets x-coordinate of object
