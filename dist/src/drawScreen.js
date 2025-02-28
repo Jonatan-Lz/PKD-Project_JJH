@@ -65,12 +65,10 @@ function drawString(world, x, y, sprite) {
     world[y][x] = sprite;
 }
 /**
- * Draws the world on the document
+ * Redraws the world based on the parameters given
  * @param world world to draw
  * @param planetList planets to put on the world
- * @param x
- * @param y
- * @param ship
+ * @param ship the ship
  */
 export function drawScreen(world, planetList, ship) {
     const halfWidth = Math.floor(world[0].length / 2);
