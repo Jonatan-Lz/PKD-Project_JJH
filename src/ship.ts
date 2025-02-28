@@ -1,6 +1,6 @@
 import { ship } from "./types.js";
 import { Pair, pair } from "../lib/list.js";
-const accel = 0.5;
+const accel = 0.1;
 const deAccel = 0.1
 const maxVel = 0.2
 /**
@@ -68,6 +68,12 @@ export function movement(dir: string, ship: ship): void{
             combinedVel = Math.sqrt(combinedVel);
             ship.xVel = xVel/combinedVel;
             ship.yVel = yVel/combinedVel;
+            if(Math.abs(ship.xVel) < 0.05){
+                ship.xVel = 0;
+            }
+            if(Math.abs(ship.yVel) < 0.05){
+                ship.yVel = 0;
+            }
         } else {
             ship.xVel = xVel;
             ship.yVel = yVel;
