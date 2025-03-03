@@ -1,5 +1,5 @@
 import { is_null, head, tail } from "../lib/list.js";
-import { get_x, get_y, get_sprite } from "./types.js";
+import { get_x, get_y, get_sprite } from "./generalFunction.js";
 /**
  * Creates and returns an empty world
  * @returns an empty world

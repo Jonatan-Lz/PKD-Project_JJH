@@ -1,9 +1,9 @@
 import { head, is_null, list, List, tail } from "../lib/list.js";
 import { createScreen, drawScreen, printer} from "./drawScreen.js";
-import { collision, collisionForEach } from "./generalFunction.js";
+import { collision, collisionForEach, change_location, get_x, get_y } from "./generalFunction.js";
 import { createPlanet } from "./planet.js";
 import { createShip, ship_rotation_sprite, movement} from "./ship.js";
-import { bullet, change_location, get_x, get_y, planet, ship } from "./types.js";
+import { bullet, planet, ship } from "./types.js";
 
 //creates a screen
 const screen = createScreen(105, 40);
