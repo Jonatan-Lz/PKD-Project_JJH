@@ -88,7 +88,7 @@ export function change_location(object: generalObject, x: number, y: number): vo
 export function get_sprite(object: generalObject): string{
     return object.gameObject.sprite
 } 
-export function get_chunX(object: generalObject): number{
+export function get_chunkX(object: generalObject): number{
     return object.gameObject.chunkX;
 }
 

@@ -1,5 +1,5 @@
 import { append, for_each, head, is_null, List, pair, remove, tail } from "../lib/list.js"
-import { collision, get_chunkY, get_chunX as get_chunkX, get_x, get_y, chunkY, chunkX, createGameobject, change_location } from "./generalFunction.js";
+import { collision, get_chunkY, get_chunkX as get_chunkX, get_x, get_y, chunkY, chunkX, createGameobject, change_location } from "./generalFunction.js";
 import { getChunk } from "./planet.js";
 import { bullet, chunk, chunks, chunkSize, generalObject} from "./types.js";
 
