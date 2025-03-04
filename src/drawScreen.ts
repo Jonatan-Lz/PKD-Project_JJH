@@ -1,5 +1,5 @@
 import{ length, List, is_null, head, tail } from "../lib/list.js"
-import{ get_x, get_y,get_sprite, planet, world, ship } from "./types.js"
+import{ get_x, get_y, get_sprite, planet, world, ship } from "./types.js"
 
 /**
  * Creates and returns an empty world
@@ -76,7 +76,7 @@ function drawString(world: world, x: number, y: number, sprite: string): void{
  * @param planetList planets to put on the world
  * @param ship the ship
  */
-export function drawScreen(world: world, planetList: List<planet>, ship: ship): void{
+export function drawScreen(world: world, planetList: List<planet>, ship: ship): void {
     const halfWidth = Math.floor(world[0].length/2);
     const halfHeight = Math.floor(world.length/2);
     let ship_x = get_x(ship);
@@ -89,7 +89,18 @@ export function drawScreen(world: world, planetList: List<planet>, ship: ship): 
                    get_x(planet) + halfWidth - ship_x,
                    get_y(planet) + halfHeight - ship_y, 
                    get_sprite(planet));
+        let newTurretList = planet.turrets;
+        while (!is_null(newTurretList)) { //draws all turrets for planet
+            const turret = head(newTurretList);
+            if (!is_null(turret)) {
+                drawString(world, 
+                    get_x(turret) + halfWidth - ship_x, 
+                    get_y(turret) + halfHeight - ship_y, 
+                    get_sprite(turret));
+            };
+            newTurretList = tail(newTurretList);
+        };
         newPlanetList = tail(newPlanetList);
-    }
+    };
     drawString(world, halfWidth, halfHeight, get_sprite(ship));
-}
+};

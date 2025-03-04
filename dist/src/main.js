@@ -1,13 +1,25 @@
-import { list } from "../lib/list.js";
+import { list, pair } from "../lib/list.js";
 import { createScreen, drawScreen, printer } from "./drawScreen.js";
 import { collisionForEach } from "./generalFunction.js";
-import { createPlanet } from "./planet.js";
+import { createPlanet, addTurretToPlanet } from "./planet.js";
 import { createShip, ship_rotation_sprite, movement } from "./ship.js";
 import { change_location, get_x, get_y } from "./types.js";
+const randomassplanet = addTurretToPlanet({ tag: "planet",
+    gameObject: {
+        color: null,
+        location: pair(-25, -10),
+        hitbox: 8,
+        rotAngle: 0,
+        hp: 1,
+        sprite: "O"
+    },
+    radius: 8,
+    turrets: list()
+});
 //creates a screen
 const screen = createScreen(105, 40);
 //creates planets and puts them in a list
-let planetList = list(createPlanet(3.21, 4.3, 4.1), createPlanet(3.3, 35.23, 6.12), createPlanet(6.42, 14.2, 18.5));
+let planetList = list(createPlanet(3.21, 4.3, 4.1), createPlanet(3.3, 35.23, 6.12), createPlanet(6.42, 14.2, 18.5), randomassplanet);
 //creates an empty bullet list
 let bulletList = null;
 //makes the ship!
