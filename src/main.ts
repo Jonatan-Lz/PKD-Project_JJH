@@ -1,12 +1,12 @@
 import { head, is_null, list, List, tail } from "../lib/list.js";
 import { createScreen, drawScreen, printer} from "./drawScreen.js";
-import { collision, collisionForEach } from "./generalFunction.js";
+import { collision, collisionForEach, get_x, get_y, change_location } from "./generalFunction.js";
 import { createPlanet, gatherPlanetList, generatePlayerWorld } from "./planet.js";
-import { createShip, ship_rotation_sprite, movement} from "./ship.js";
-import { bullet, change_location, chunks, get_x, get_y, planet, ship } from "./types.js";
+import { createShip, ship_rotation_sprite, movement, aim_ship} from "./ship.js";
+import { bullet, chunks, planet, ship, keys_pressed} from "./types.js";
 
 //creates a screen
-const screen = createScreen(105, 50);
+const screen = createScreen(105, 40);
 //creates planets and puts them in a list
 let planetList: List<planet> = list(createPlanet(3.21, 4.3, 4.1),createPlanet(3.3, 35.23, 6.12),createPlanet(6.42, 14.2, 18.5));
 //creates an empty bullet list
@@ -21,8 +21,13 @@ let shipChunkY: number = 0;
 let stop: boolean = false;
 //pauses the game
 let pause: boolean = true;
+let keys: keys_pressed = {w: false, a: false, s: false, d: false, r: false,
+                          up: false, left: false, down: false, right: false};
+
 const worldChunks: chunks = {}; // each chunk is defined by a 100x100 area (for now)
 const chunkSize: number = 100;
+
+
 
 //handles input.
 //WASD -> ship movement
@@ -32,22 +37,90 @@ function handleKeyDownEvent(event: KeyboardEvent): void {
     const key: string = event.key;
     switch(key) {
         case "d":
+            movement(key, playerShip);
+            keys.d = true;
+            break;
         case "a":
+            movement(key, playerShip);
+            keys.a = true;
+            break;
         case "w":
+            movement(key, playerShip);
+            keys.w = true;
+            break;
         case "s":
+            movement(key, playerShip);
+            keys.s = true;
+            break;
         case "r":
             movement(key, playerShip);
+            keys.r = true;
             break;
         case "p":
             pause = !pause;
             break;
        
-      } 
+      }
+    switch(key) {
+        case "ArrowUp":
+            console.log("keyDown up");
+            keys.up = true;
+            break;
+        case "ArrowLeft":
+            console.log("keyDown left");
+            keys.left = true;
+            break;
+        case "ArrowDown":
+            console.log("keyDown down");
+            keys.down = true;
+            break;
+        case "ArrowRight":
+            console.log("keyDown right");
+            keys.right = true;
+            break;
+    }
 }
 
 //handles what happens when you let
 //go of a key.
 function handleKeyUpEvent(event: KeyboardEvent): void {
+    const key = event.key;
+    switch(key) {
+        case "d":
+            keys.d = false;
+            break;
+        case "a":
+            keys.a = false;
+            break;
+        case "w":
+            keys.w = false;
+            break;
+        case "s":
+            keys.s = false;
+            break;
+        case "r":
+            keys.r = false;
+            break;
+       
+      }
+    switch(key) {
+        case "ArrowUp":
+            console.log("keyUp up");
+            keys.up = true;
+            break;
+        case "ArrowLeft":
+            console.log("keyUp left");
+            keys.left = true;
+            break;
+        case "ArrowDown":
+            console.log("keyUp down");
+            keys.down = true;
+            break;
+        case "ArrowRight":
+            console.log("keyUp right");
+            keys.right = true;
+            break;
+    }
 }
 
 //simulates what happens in the world.
@@ -71,6 +144,7 @@ function ticker(): void{
         const surroundingPlanets = gatherPlanetList(worldChunks, shipChunkX, shipChunkY);
         simulate(surroundingPlanets);
         drawScreen(screen, surroundingPlanets, playerShip);
+        aim_ship(keys, playerShip, screen);
         const output = document.getElementById('output') as HTMLParagraphElement; 
         output.innerHTML = printer(screen);
     }

@@ -1,6 +1,7 @@
 import{ length, List, is_null, head, tail } from "../lib/list.js"
 import{ planet, world, ship } from "./types.js"
 import{ get_x, get_y,get_sprite } from "./generalFunction.js"
+import { aim_ship } from "./ship.js";
 
 /**
  * Creates and returns an empty world
@@ -67,8 +68,12 @@ function drawCircle(world: world, radius: number, x: number, y: number, sprite: 
 }
 
 //writes the sprite on designated coordinates, on given world.
-function drawString(world: world, x: number, y: number, sprite: string): void{
-    world[y][x] = sprite;
+export function drawString(world: world, x: number, y: number, sprite: string): void{
+    if(x > 0 && y > 0) {
+        world[y][x] = sprite;
+    } else {
+        console.log("Drawstring failed, Negative x or y.");
+    }
 }
 
 /**

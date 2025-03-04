@@ -61,8 +61,13 @@ function drawCircle(world, radius, x, y, sprite) {
     }
 }
 //writes the sprite on designated coordinates, on given world.
-function drawString(world, x, y, sprite) {
-    world[y][x] = sprite;
+export function drawString(world, x, y, sprite) {
+    if (x > 0 && y > 0) {
+        world[y][x] = sprite;
+    }
+    else {
+        console.log("Drawstring failed, Negative x or y.");
+    }
 }
 /**
  * Redraws the world based on the parameters given
