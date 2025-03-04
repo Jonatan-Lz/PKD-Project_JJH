@@ -3,7 +3,7 @@ import { gatherBulletList, moveAll, removeBullet, spawnBullet } from "./bullet.j
 import { createScreen, drawScreen, printer} from "./drawScreen.js";
 import { change_location, chunkX, chunkY, collision, collisionForEach, get_x, get_y } from "./generalFunction.js";
 import { createPlanet, gatherPlanetList, generatePlayerWorld, getChunk } from "./planet.js";
-import { createShip, ship_rotation_sprite, movement} from "./ship.js";
+import { createShip, ship_rotation_sprite, movement, aimShipTurret} from "./ship.js";
 import { bullet, world, planet, ship, keys_pressed} from "./types.js";
 
 //creates a screen
@@ -22,7 +22,8 @@ let keys: keys_pressed = {w: false, a: false, s: false, d: false, r: false,
                           up: false, left: false, down: false, right: false};
 
 const worldChunks: world = {}; // each chunk is defined by a 100x100 area (for now)
-const delay = 100; //milliseconds before next frame
+const delay = 40; //milliseconds before next frame
+
 
 //handles input.
 //WASD -> ship movement
@@ -32,23 +33,18 @@ function handleKeyDownEvent(event: KeyboardEvent): void {
     const key: string = event.key;
     switch(key) {
         case "d":
-            movement(key, playerShip);
             keys.d = true;
             break;
         case "a":
-            movement(key, playerShip);
             keys.a = true;
             break;
         case "w":
-            movement(key, playerShip);
             keys.w = true;
             break;
         case "s":
-            movement(key, playerShip);
             keys.s = true;
             break;
         case "r":
-            movement(key, playerShip);
             keys.r = true;
             break;
         case "p":
@@ -57,22 +53,19 @@ function handleKeyDownEvent(event: KeyboardEvent): void {
         case "f":
             const chunk = getChunk(worldChunks, shipChunkX, shipChunkY);
             if( chunk != undefined){
-            spawnBullet(chunk, get_x(playerShip), get_y(playerShip), playerShip.gameObject.rotAngle, 2, false);
+                spawnBullet(chunk, get_x(playerShip), get_y(playerShip), playerShip.gameObject.rotAngle, false);
             }
+            break;
         case "ArrowUp":
-            console.log("keyDown up");
             keys.up = true;
             break;
         case "ArrowLeft":
-            console.log("keyDown left");
             keys.left = true;
             break;
         case "ArrowDown":
-            console.log("keyDown down");
             keys.down = true;
             break;
         case "ArrowRight":
-            console.log("keyDown right");
             keys.right = true;
             break;
         }
@@ -99,20 +92,16 @@ function handleKeyUpEvent(event: KeyboardEvent): void {
             keys.r = false;
             break;
         case "ArrowUp":
-            console.log("keyUp up");
-            keys.up = true;
+            keys.up = false;
             break;
         case "ArrowLeft":
-            console.log("keyUp left");
-            keys.left = true;
+            keys.left = false;
             break;
         case "ArrowDown":
-            console.log("keyUp down");
-            keys.down = true;
+            keys.down = false;
             break;
         case "ArrowRight":
-            console.log("keyUp right");
-            keys.right = true;
+            keys.right = false;
             break;
     }
 }
@@ -151,6 +140,8 @@ function ticker(): void{
         drawScreen(screen, surroundingPlanets, surroundingBullets, playerShip);
         const output = document.getElementById('output') as HTMLParagraphElement; 
         output.innerHTML = printer(screen);
+        movement(keys, playerShip);
+        aimShipTurret(keys, playerShip);
     }
     if(!stop){
         setTimeout(ticker, delay);

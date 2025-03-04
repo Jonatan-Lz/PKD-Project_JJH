@@ -95,7 +95,7 @@ export function drawScreen(screen, planetList, bulletList, ship) {
 }
 export function aim_ship(screen, ship, width, height) {
     const angle = ship.gameObject.rotAngle;
-    for (let i = 2; i <= 6; i += 2) {
+    for (let i = 3; i <= 9; i += 3) {
         drawString(screen, width + i * Math.cos(angle), height + i * Math.sin(angle), "+");
     }
 }

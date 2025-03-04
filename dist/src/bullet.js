@@ -2,6 +2,7 @@ import { append, head, is_null, pair, remove, tail } from "../lib/list.js";
 import { get_chunkY, get_chunkX as get_chunkX, get_x, get_y, chunkY, chunkX, createGameobject, change_location } from "./generalFunction.js";
 import { getChunk } from "./planet.js";
 const liftime = 100;
+const speed = 2; // bullet speed
 export function moveAll(world, bulletList) {
     while (!is_null(bulletList)) {
         const bullet = head(bulletList);
@@ -22,7 +23,7 @@ function moveBullet(world, bullet) {
         changeBulletChunk(world, bullet);
     }
 }
-export function spawnBullet(chunk, x, y, angle, speed, enemy) {
+export function spawnBullet(chunk, x, y, angle, enemy) {
     const newBullet = createBullet(x, y, Math.cos(angle) * speed, Math.sin(angle) * speed, "*", enemy);
     chunk.bullets = pair(newBullet, chunk.bullets);
 }

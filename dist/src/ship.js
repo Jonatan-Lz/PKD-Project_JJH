@@ -1,8 +1,11 @@
-import { createGameobject, get_x, get_y } from "./generalFunction.js";
-import { drawString } from "./drawScreen.js";
-const accel = 0.1;
-const deAccel = 0.1;
-const maxVel = 0.2;
+import { createGameobject } from "./generalFunction.js";
+const accel = 0.02; //acceleration suggested 5% of maxVel
+const deAccel = 0.02; //deacceleration suggested 5% of maxVel
+const maxVel = 0.4;
+const minVel = 0.016; //when changing dir min value for complete switch in dir
+// suggested 4% of maxVel (Shuold always be lower then accel)
+const aimSpeed = 0.1;
+const dirDeviation = 0.1; // acceptable range of deviation for sprite change
 /**
  * Creates and returns a ship with given parameters:
  * @param hitboxRad hitbox radius
@@ -23,53 +26,52 @@ export function createShip(hitboxRad, x, y, sprite, hp) {
  *            "w" = up, "s" = down, "r" = slow down
  * @param ship the ship
  */
-export function movement(dir, ship) {
+export function movement(keys, ship) {
     let xVel = ship.xVel;
     let yVel = ship.yVel;
-    switch (dir) {
-        case "a":
-            xVel = xVel - accel;
-            changeMovement();
-            break;
-        case "d":
-            xVel = xVel + accel;
-            changeMovement();
-            break;
-        case "w":
-            yVel = yVel - accel;
-            changeMovement();
-            break;
-        case "s":
-            yVel = yVel + accel;
-            changeMovement();
-            break;
-        case "r":
-            if (Math.abs(yVel) < 0.1) {
-                yVel = 0;
-            }
-            else {
-                yVel -= (yVel / Math.abs(yVel)) * deAccel;
-            }
-            if (Math.abs(xVel) < 0.1) {
-                xVel = 0;
-            }
-            else {
-                xVel -= (xVel / Math.abs(xVel)) * deAccel;
-            }
-            ship.xVel = xVel;
-            ship.yVel = yVel;
-            break;
+    if (keys.a) {
+        xVel = xVel - accel;
+        normaliseMovement();
     }
-    function changeMovement() {
+    if (keys.d) {
+        xVel = xVel + accel;
+        normaliseMovement();
+    }
+    if (keys.w) {
+        yVel = yVel - accel;
+        normaliseMovement();
+    }
+    if (keys.s) {
+        yVel = yVel + accel;
+        normaliseMovement();
+    }
+    if (keys.r) {
+        if (Math.abs(yVel) < minVel) {
+            yVel = 0;
+        }
+        else {
+            yVel -= (yVel / Math.abs(yVel)) * deAccel;
+        }
+        if (Math.abs(xVel) < minVel) {
+            xVel = 0;
+        }
+        else {
+            xVel -= (xVel / Math.abs(xVel)) * deAccel;
+        }
+        ship.xVel = xVel;
+        ship.yVel = yVel;
+    }
+    function normaliseMovement() {
         let combinedVel = Math.sqrt(Math.pow(xVel, 2) + Math.pow(yVel, 2));
+        console.log(combinedVel);
         if (combinedVel > maxVel) {
-            combinedVel = Math.sqrt(combinedVel);
+            combinedVel = Math.sqrt(combinedVel / maxVel);
             ship.xVel = xVel / combinedVel;
             ship.yVel = yVel / combinedVel;
-            if (Math.abs(ship.xVel) < 0.05) {
+            if (Math.abs(ship.xVel) < minVel) {
                 ship.xVel = 0;
             }
-            if (Math.abs(ship.yVel) < 0.05) {
+            if (Math.abs(ship.yVel) < minVel) {
                 ship.yVel = 0;
             }
         }
@@ -86,91 +88,54 @@ export function ship_rotation_sprite(ship) {
     const xVel = ship.xVel;
     const yVel = ship.yVel;
     let sprite = "";
-    if (xVel > 0) {
-        if (yVel > 0) {
+    if (xVel > dirDeviation) {
+        if (yVel > dirDeviation) {
             sprite = "&seArr;";
         }
-        else if (yVel < 0) {
+        else if (yVel < -dirDeviation) {
             sprite = "&neArr;";
         }
-        else if (yVel === 0) {
+        else {
             sprite = "&rArr;";
         }
-        else { }
     }
-    else if (xVel < 0) {
-        if (yVel > 0) {
+    else if (xVel < -dirDeviation) {
+        if (yVel > dirDeviation) {
             sprite = "&swArr;";
         }
-        else if (yVel < 0) {
+        else if (yVel < -dirDeviation) {
             sprite = "&nwArr;";
         }
-        else if (yVel === 0) {
+        else {
             sprite = "&lArr;";
         }
-        else { }
     }
-    else if (xVel === 0) {
-        if (yVel > 0) {
+    else {
+        if (yVel > dirDeviation) {
             sprite = "&dArr;";
         }
-        else if (yVel < 0) {
+        else if (yVel < -dirDeviation) {
             sprite = "&uArr;";
         }
-        else if (xVel === 0) {
+        else {
             sprite = "&star;";
         }
-        else { }
     }
     ship.gameObject.sprite = sprite;
 }
 /**
- * Draws a line from the ship to show where its aiming
+ * Changes the direction the gun aims toward
  * @param keys currently pressed down keys
  * @param ship ship thats gonna aim
- * @param world world to draw the aim on
  */
-export function aim_ship(keys, ship, world) {
-    const ship_x = get_x(ship);
-    const ship_y = get_y(ship);
-    let print_x = 0;
-    let print_y = 0;
-    let y_direction = 0;
-    let x_direction = 0;
-    if (keys.up) {
-        y_direction = 1;
-    }
-    else if (keys.left) {
-        x_direction = -1;
-    }
-    else if (keys.down) {
-        y_direction = -1;
+export function aimShipTurret(keys, ship) {
+    if (keys.left) {
+        ship.gameObject.rotAngle -= aimSpeed;
     }
     else if (keys.right) {
-        x_direction = 1;
+        ship.gameObject.rotAngle += aimSpeed;
     }
-    else if (keys.up && keys.left) {
-        y_direction = 1;
-        x_direction = -1;
-    }
-    else if (keys.left && keys.down) {
-        y_direction = -1;
-        x_direction = -1;
-    }
-    else if (keys.down && keys.right) {
-        y_direction = -1;
-        x_direction = 1;
-    }
-    else if (keys.right && keys.up) {
-        y_direction = 1;
-        x_direction = 1;
-    }
-    else { }
-    for (let i = 1; i < 5; i = i + 1) {
-        print_x = ship_x + i * x_direction;
-        print_y = ship_y + i * y_direction;
-        if (print_x > 0 && print_x < world[0].length && print_y > 0 && print_y < world.length) {
-            drawString(world, print_x, print_y, "*");
-        }
+    if (ship.gameObject.rotAngle > Math.PI * 2 || ship.gameObject.rotAngle < -Math.PI * 2) {
+        ship.gameObject.rotAngle = 0;
     }
 }

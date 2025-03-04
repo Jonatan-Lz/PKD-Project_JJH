@@ -4,6 +4,7 @@ import { getChunk } from "./planet.js";
 import { bullet, chunk, world, chunkSize, generalObject} from "./types.js";
 
 const liftime = 100;
+const speed = 2; // bullet speed
 
 export function moveAll(world: world, bulletList: List<bullet>): void{
     while(!is_null(bulletList)){
@@ -26,7 +27,7 @@ function moveBullet(world: world, bullet: bullet): void{
     }
 }
 
-export function spawnBullet(chunk: chunk, x: number, y: number, angle: number, speed: number, enemy: boolean): void{
+export function spawnBullet(chunk: chunk, x: number, y: number, angle: number, enemy: boolean): void{
     const newBullet = createBullet(x, y, Math.cos(angle) * speed, Math.sin(angle) * speed, "*", enemy)
     chunk.bullets = pair(newBullet, chunk.bullets);
 }
