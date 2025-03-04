@@ -83,6 +83,16 @@ export function drawScreen(screen, planetList, bulletList, ship) {
     while (!is_null(newPlanetList)) {
         const planet = head(newPlanetList);
         drawCircle(screen, planet.radius, get_x(planet) + halfWidth - ship_x, get_y(planet) + halfHeight - ship_y, get_sprite(planet));
+        let newTurretList = planet.turrets;
+        while (!is_null(newTurretList)) { //draws all turrets for planet
+            const turret = head(newTurretList);
+            if (!is_null(turret)) {
+                drawString(screen, get_x(turret) + halfWidth - ship_x, get_y(turret) + halfHeight - ship_y, get_sprite(turret));
+            }
+            ;
+            newTurretList = tail(newTurretList);
+        }
+        ;
         newPlanetList = tail(newPlanetList);
     }
     while (!is_null(newBulletList)) {
@@ -99,4 +109,3 @@ export function aim_ship(screen, ship, width, height) {
         drawString(screen, width + i * Math.cos(angle), height + i * Math.sin(angle), "+");
     }
 }
-;

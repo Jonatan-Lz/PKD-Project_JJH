@@ -1,9 +1,14 @@
-import { head, is_null, tail } from "../lib/list.js";
+import { head, is_null, list, tail } from "../lib/list.js";
 import { gatherBulletList, moveAll, removeBullet, spawnBullet } from "./bullet.js";
 import { createScreen, drawScreen, printer } from "./drawScreen.js";
-import { change_location, chunkX, chunkY, collisionForEach, get_x, get_y } from "./generalFunction.js";
-import { gatherPlanetList, generatePlayerWorld, getChunk } from "./planet.js";
+import { change_location, chunkX, chunkY, collisionForEach, createGameobject, get_x, get_y } from "./generalFunction.js";
+import { addTurretToPlanet, gatherPlanetList, generatePlayerWorld, getChunk } from "./planet.js";
 import { createShip, ship_rotation_sprite, movement, aimShipTurret } from "./ship.js";
+const randomassplanet = addTurretToPlanet({ tag: "planet",
+    gameObject: createGameobject(-25, -10, 8, 1, "O"),
+    radius: 8,
+    turrets: list()
+});
 //creates a screen
 const screen = createScreen(105, 50);
 //makes the ship!

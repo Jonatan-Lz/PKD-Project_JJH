@@ -1,6 +1,6 @@
 import { chunkSize } from "./types.js";
-import { append, head, is_null, pair, tail } from "../lib/list.js";
-import { createGameobject, minDistCollisionForEach } from "./generalFunction.js";
+import { append, head, is_null, list, pair, tail } from "../lib/list.js";
+import { createGameobject, minDistCollisionForEach, get_x, get_y } from "./generalFunction.js";
 const amount = 5; //number of planets in a chunk
 const minSize = 4; //Planets min size
 const maxSize = 10; // planets max size
@@ -14,7 +14,32 @@ const minDist = 7; // minimum distance between planets
  */
 export function createPlanet(radius, x, y) {
     return { tag: "planet", gameObject: createGameobject(x, y, radius, 1, "O"),
-        radius: radius };
+        radius: radius,
+        turrets: list() };
+}
+// a basic turret at 0, 0
+export const basicTurret = {
+    tag: "turret",
+    gameObject: createGameobject(0, 0, 1, 1, "X")
+};
+/**
+ * Creates a basic turret to a given planet (((((WIP)))))
+ * @param planet the planet the turret is tied to
+ * @returns the planet with the added turret
+ */
+export function addTurretToPlanet(planet) {
+    var turret = basicTurret;
+    function randomXYOnPlanetSurface(planet) {
+        const x = head(planet.gameObject.location) - planet.radius + Math.floor(Math.random() * 2 * planet.radius + 1); //chooses a random x within the planet's diameter
+        // (x - a)^2 + (y - b)^2 = r^2    ==>    sqrt((y - b)^2) = sqrt(r^2 - (x - a)^2)    ==>    y = sqrt(r^2 - (x - a)^2) - b
+        let y = Math.sqrt(Math.pow(planet.radius, 2) - Math.pow((x - head(planet.gameObject.location)), 2)) - tail(planet.gameObject.location); // y calculated through (x - a)^2 + (y - b)^2 = r^2 
+        //if (Math.random() < 0.5) {y = -y} else {} // 50% to make y negative for +- from taking square root
+        return pair(x, y);
+    }
+    //turret.gameObject.location = randomXYOnPlanetSurface(planet);
+    turret.gameObject.location = pair(get_x(planet) + planet.radius + 1, get_y(planet)); //temp test
+    planet.turrets = append(planet.turrets, list(turret));
+    return planet;
 }
 /**
  * Generates the world around the player
