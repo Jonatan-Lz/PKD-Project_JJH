@@ -1,5 +1,5 @@
 import{ length, List, is_null, head, tail } from "../lib/list.js"
-import{ get_x, get_y,get_sprite, planet, world, ship } from "./types.js"
+import{ get_x, get_y,get_sprite, planet, world, ship, bullet } from "./types.js"
 
 /**
  * Creates and returns an empty world
@@ -67,7 +67,9 @@ function drawCircle(world: world, radius: number, x: number, y: number, sprite: 
 
 //writes the sprite on designated coordinates, on given world.
 function drawString(world: world, x: number, y: number, sprite: string): void{
-    world[y][x] = sprite;
+    if(world[Math.floor(y)] != undefined && world[Math.floor(y)][Math.floor(x)] != undefined){
+        world[Math.floor(y)][Math.floor(x)] = sprite;
+    }
 }
 
 /**
@@ -76,13 +78,14 @@ function drawString(world: world, x: number, y: number, sprite: string): void{
  * @param planetList planets to put on the world
  * @param ship the ship
  */
-export function drawScreen(world: world, planetList: List<planet>, ship: ship): void{
+export function drawScreen(world: world, planetList: List<planet>, bulletList: List<bullet>, ship: ship): void{
     const halfWidth = Math.floor(world[0].length/2);
     const halfHeight = Math.floor(world.length/2);
     let ship_x = get_x(ship);
     let ship_y = get_y(ship);
     clearScreen(world);
     let newPlanetList = planetList;
+    let newBulletList = bulletList;
     while(!is_null(newPlanetList)){
         const planet = head(newPlanetList);
         drawCircle(world, planet.radius, 
@@ -90,6 +93,14 @@ export function drawScreen(world: world, planetList: List<planet>, ship: ship): 
                    get_y(planet) + halfHeight - ship_y, 
                    get_sprite(planet));
         newPlanetList = tail(newPlanetList);
+    }
+    while(!is_null(newBulletList)){
+        const bullet = head(newBulletList);
+        drawString(world,
+                   get_x(bullet) + halfWidth - ship_x, 
+                   get_y(bullet) + halfHeight - ship_y, 
+                   get_sprite(bullet))
+        newBulletList = tail(newBulletList);
     }
     drawString(world, halfWidth, halfHeight, get_sprite(ship));
 }

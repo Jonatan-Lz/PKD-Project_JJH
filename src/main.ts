@@ -1,16 +1,13 @@
-import { head, is_null, list, List, tail } from "../lib/list.js";
+import { for_each, head, is_null, list, List, tail } from "../lib/list.js";
+import { gatherBulletList, moveAll, removeBullet, spawnBullet } from "./bullet.js";
 import { createScreen, drawScreen, printer} from "./drawScreen.js";
-import { collision, collisionForEach } from "./generalFunction.js";
-import { createPlanet, gatherPlanetList, generatePlayerWorld } from "./planet.js";
+import { collision, collisionForEach} from "./generalFunction.js";
+import { createPlanet, gatherPlanetList, generatePlayerWorld, getChunk } from "./planet.js";
 import { createShip, ship_rotation_sprite, movement} from "./ship.js";
-import { bullet, change_location, chunks, get_x, get_y, planet, ship } from "./types.js";
+import { bullet, change_location, chunks, chunkX, chunkY, get_x, get_y, planet, ship } from "./types.js";
 
 //creates a screen
 const screen = createScreen(105, 50);
-//creates planets and puts them in a list
-let planetList: List<planet> = list(createPlanet(3.21, 4.3, 4.1),createPlanet(3.3, 35.23, 6.12),createPlanet(6.42, 14.2, 18.5));
-//creates an empty bullet list
-let bulletList: List<bullet> = null;
 //makes the ship!
 let playerShip: ship = createShip(0.5, 0, 0, "A", 200);
 //ships current chunks x pos
@@ -22,7 +19,7 @@ let stop: boolean = false;
 //pauses the game
 let pause: boolean = true;
 const worldChunks: chunks = {}; // each chunk is defined by a 100x100 area (for now)
-const chunkSize: number = 100;
+const delay = 100; //milliseconds before next frame
 
 //handles input.
 //WASD -> ship movement
@@ -41,6 +38,11 @@ function handleKeyDownEvent(event: KeyboardEvent): void {
         case "p":
             pause = !pause;
             break;
+        case "f":
+            const chunk = getChunk(worldChunks, shipChunkX, shipChunkY);
+            if( chunk != undefined){
+            spawnBullet(chunk, get_x(playerShip), get_y(playerShip), playerShip.gameObject.rotAngle, 2, false);
+        }
        
       } 
 }
@@ -51,13 +53,22 @@ function handleKeyUpEvent(event: KeyboardEvent): void {
 }
 
 //simulates what happens in the world.
-function simulate(planets: List<planet>): void{
-    if(0 <= collisionForEach(playerShip, planets)){
-        stop = true;
-    }
+function simulate(planets: List<planet>, bullets: List<bullet>): void{
+    moveAll(worldChunks, bullets);
     change_location(playerShip,
         get_x(playerShip) + playerShip.xVel, 
         get_y(playerShip) + playerShip.yVel);
+    if(null != collisionForEach(playerShip, planets)){
+        stop = true;
+    }
+    let newBulletList = bullets;
+    while(!is_null(newBulletList)){
+        const bullet = head(newBulletList)
+        if(null != collisionForEach(bullet, planets)){
+            removeBullet(worldChunks, bullet)
+        }
+        newBulletList = tail(newBulletList);
+    }
     ship_rotation_sprite(playerShip);
 }
 
@@ -65,17 +76,18 @@ function simulate(planets: List<planet>): void{
 //draws the world on the website for each tick.
 function ticker(): void{
     if(pause){
-        shipChunkX = Math.floor(get_x(playerShip) / chunkSize);
-        shipChunkY = Math.floor(get_y(playerShip) / chunkSize);
-        generatePlayerWorld(worldChunks, shipChunkX, shipChunkY, chunkSize);
+        shipChunkX = chunkX(get_x(playerShip));
+        shipChunkY = chunkY(get_y(playerShip));
+        generatePlayerWorld(worldChunks, shipChunkX, shipChunkY);
         const surroundingPlanets = gatherPlanetList(worldChunks, shipChunkX, shipChunkY);
-        simulate(surroundingPlanets);
-        drawScreen(screen, surroundingPlanets, playerShip);
+        const surroundingBullets = gatherBulletList(worldChunks, shipChunkX, shipChunkY);
+        simulate(surroundingPlanets, surroundingBullets);
+        drawScreen(screen, surroundingPlanets, surroundingBullets, playerShip);
         const output = document.getElementById('output') as HTMLParagraphElement; 
         output.innerHTML = printer(screen);
     }
     if(!stop){
-        setTimeout(ticker, 100);
+        setTimeout(ticker, delay);
     }
 }
 ticker();

@@ -1,8 +1,10 @@
+import { chunkSize, createGameobject } from "./types.js";
 import { append, head, is_null, pair, tail } from "../lib/list.js";
-import { collisionForEach } from "./generalFunction.js";
+import { minDistCollisionForEach } from "./generalFunction.js";
 const amount = 5; //number of planets in a chunk
 const minSize = 4; //Planets min size
 const maxSize = 10; // planets max size
+const minDist = 7; // minimum distance between planets
 /**
  * Creates and returns a planet
  * @param radius radius of planet
@@ -11,12 +13,7 @@ const maxSize = 10; // planets max size
  * @returns created planet
  */
 export function createPlanet(radius, x, y) {
-    return { tag: "planet", gameObject: { color: null,
-            location: pair(x, y),
-            hitbox: radius,
-            rotAngle: 0,
-            hp: 1,
-            sprite: "O" },
+    return { tag: "planet", gameObject: createGameobject(x, y, radius, 1, "O"),
         radius: radius };
 }
 /**
@@ -26,7 +23,7 @@ export function createPlanet(radius, x, y) {
  * @param y the players chunks y
  * @param chunkSize the size of a chunk
  */
-export function generatePlayerWorld(world, x, y, chunkSize) {
+export function generatePlayerWorld(world, x, y) {
     let undefindChunks = gatherUndefinedChunks(world, x, y);
     while (!is_null(undefindChunks)) {
         const chunk = head(undefindChunks);
@@ -67,7 +64,7 @@ export function generateChunk(world, x, y, chunkSize) {
     const currentChunk = getChunk(world, x, y);
     if (currentChunk === undefined) {
         const surroundingPlanets = gatherPlanetList(world, x, y);
-        return { planets: generatePlanets(surroundingPlanets, x * chunkSize, y * chunkSize, chunkSize),
+        return { planets: generatePlanetList(surroundingPlanets, x * chunkSize, y * chunkSize),
             bullets: null,
             turrets: null
         };
@@ -104,12 +101,11 @@ export function gatherPlanetList(world, x, y) {
  * @param chunkSize the size of a chunk
  * @returns a list of planets that do not collide with eachother
  */
-function generatePlanets(planets, xOffset, yOffset, chunkSize) {
+function generatePlanetList(planets, xOffset, yOffset) {
     let planetList = null;
     for (let i = amount; i > 0; i--) {
-        console.log(xOffset + " " + yOffset);
         const planet = createPlanet(Math.random() * (maxSize - minSize) + minSize, Math.random() * chunkSize + xOffset, Math.random() * chunkSize + yOffset);
-        if (collisionForEach(planet, planets) >= 0 || collisionForEach(planet, planetList) >= 0) {
+        if (minDistCollisionForEach(planet, planets, minDist) >= 0 || minDistCollisionForEach(planet, planetList, minDist) >= 0) {
             i++;
             continue;
         }
@@ -118,6 +114,6 @@ function generatePlanets(planets, xOffset, yOffset, chunkSize) {
     return planetList;
 }
 //Gets the chunk of x, y
-function getChunk(world, x, y) {
+export function getChunk(world, x, y) {
     return world[x + "," + y];
 }

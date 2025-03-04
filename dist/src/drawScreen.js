@@ -62,7 +62,9 @@ function drawCircle(world, radius, x, y, sprite) {
 }
 //writes the sprite on designated coordinates, on given world.
 function drawString(world, x, y, sprite) {
-    world[y][x] = sprite;
+    if (world[Math.floor(y)] != undefined && world[Math.floor(y)][Math.floor(x)] != undefined) {
+        world[Math.floor(y)][Math.floor(x)] = sprite;
+    }
 }
 /**
  * Redraws the world based on the parameters given
@@ -70,17 +72,23 @@ function drawString(world, x, y, sprite) {
  * @param planetList planets to put on the world
  * @param ship the ship
  */
-export function drawScreen(world, planetList, ship) {
+export function drawScreen(world, planetList, bulletList, ship) {
     const halfWidth = Math.floor(world[0].length / 2);
     const halfHeight = Math.floor(world.length / 2);
     let ship_x = get_x(ship);
     let ship_y = get_y(ship);
     clearScreen(world);
     let newPlanetList = planetList;
+    let newBulletList = bulletList;
     while (!is_null(newPlanetList)) {
         const planet = head(newPlanetList);
         drawCircle(world, planet.radius, get_x(planet) + halfWidth - ship_x, get_y(planet) + halfHeight - ship_y, get_sprite(planet));
         newPlanetList = tail(newPlanetList);
+    }
+    while (!is_null(newBulletList)) {
+        const bullet = head(newBulletList);
+        drawString(world, get_x(bullet) + halfWidth - ship_x, get_y(bullet) + halfHeight - ship_y, get_sprite(bullet));
+        newBulletList = tail(newBulletList);
     }
     drawString(world, halfWidth, halfHeight, get_sprite(ship));
 }
