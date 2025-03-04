@@ -1,11 +1,11 @@
 import { createGameobject } from "./generalFunction.js";
-const accel = 0.02; //acceleration suggested 5% of maxVel
-const deAccel = 0.02; //deacceleration suggested 5% of maxVel
+const accel = 0.018; //acceleration suggested 4.5% of maxVel
+const deAccel = 0.018; //deacceleration suggested 4.5% of maxVel
 const maxVel = 0.4;
-const minVel = 0.016; //when changing dir min value for complete switch in dir
-// suggested 4% of maxVel (Shuold always be lower then accel)
+const minVel = 0.01; //when changing dir min value for complete switch in dir
+// suggested 2.5% of maxVel (Shuold always be lower then accel)
 const aimSpeed = 0.1;
-const dirDeviation = 0.1; // acceptable range of deviation for sprite change
+const dirDeviation = 0.03; // acceptable range of deviation for sprite change
 /**
  * Creates and returns a ship with given parameters:
  * @param hitboxRad hitbox radius
@@ -31,19 +31,19 @@ export function movement(keys, ship) {
     let yVel = ship.yVel;
     if (keys.a) {
         xVel = xVel - accel;
-        normaliseMovement();
+        normalizeMovement();
     }
     if (keys.d) {
         xVel = xVel + accel;
-        normaliseMovement();
+        normalizeMovement();
     }
     if (keys.w) {
         yVel = yVel - accel;
-        normaliseMovement();
+        normalizeMovement();
     }
     if (keys.s) {
         yVel = yVel + accel;
-        normaliseMovement();
+        normalizeMovement();
     }
     if (keys.r) {
         if (Math.abs(yVel) < minVel) {
@@ -61,11 +61,10 @@ export function movement(keys, ship) {
         ship.xVel = xVel;
         ship.yVel = yVel;
     }
-    function normaliseMovement() {
+    function normalizeMovement() {
         let combinedVel = Math.sqrt(Math.pow(xVel, 2) + Math.pow(yVel, 2));
-        console.log(combinedVel);
         if (combinedVel > maxVel) {
-            combinedVel = Math.sqrt(combinedVel / maxVel);
+            combinedVel = combinedVel / maxVel;
             ship.xVel = xVel / combinedVel;
             ship.yVel = yVel / combinedVel;
             if (Math.abs(ship.xVel) < minVel) {
