@@ -1,4 +1,4 @@
-import { createGameobject } from "./types.js";
+import { pair } from "../lib/list.js";
 const accel = 0.1;
 const deAccel = 0.1;
 const maxVel = 0.2;
@@ -19,7 +19,7 @@ export function createShip(hitboxRad, x, y, sprite, hp) {
 /**
  * Changes velocity of ship based on input
  * @param dir the direction "a" = left, "d" = right
- *            "w" = upp, "s" = down, "r" = slow down
+ *            "w" = up, "s" = down, "r" = slow down
  * @param ship the ship
  */
 export function movement(dir, ship) {
@@ -122,4 +122,54 @@ export function ship_rotation_sprite(ship) {
         else { }
     }
     ship.gameObject.sprite = sprite;
+}
+/**
+ * Draws a line from the ship to show where its aiming
+ * @param keys currently pressed down keys
+ * @param ship ship thats gonna aim
+ * @param world world to draw the aim on
+ */
+export function aim_ship(keys, ship, world) {
+    const ship_x = get_x(ship);
+    const ship_y = get_y(ship);
+    let print_x = 0;
+    let print_y = 0;
+    let y_direction = 0;
+    let x_direction = 0;
+    if (keys.up) {
+        y_direction = 1;
+    }
+    else if (keys.left) {
+        x_direction = -1;
+    }
+    else if (keys.down) {
+        y_direction = -1;
+    }
+    else if (keys.right) {
+        x_direction = 1;
+    }
+    else if (keys.up && keys.left) {
+        y_direction = 1;
+        x_direction = -1;
+    }
+    else if (keys.left && keys.down) {
+        y_direction = -1;
+        x_direction = -1;
+    }
+    else if (keys.down && keys.right) {
+        y_direction = -1;
+        x_direction = 1;
+    }
+    else if (keys.right && keys.up) {
+        y_direction = 1;
+        x_direction = 1;
+    }
+    else { }
+    for (let i = 1; i < 5; i = i + 1) {
+        print_x = ship_x + i * x_direction;
+        print_y = ship_y + i * y_direction;
+        if (print_x > 0 && print_x < world[0].length && print_y > 0 && print_y < world.length) {
+            drawString(world, print_x, print_y, "*");
+        }
+    }
 }

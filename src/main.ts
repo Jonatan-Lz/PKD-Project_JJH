@@ -1,10 +1,10 @@
 import { for_each, head, is_null, list, List, tail } from "../lib/list.js";
 import { gatherBulletList, moveAll, removeBullet, spawnBullet } from "./bullet.js";
 import { createScreen, drawScreen, printer} from "./drawScreen.js";
-import { collision, collisionForEach} from "./generalFunction.js";
+import { collision, collisionForEach } from "./generalFunction.js";
 import { createPlanet, gatherPlanetList, generatePlayerWorld, getChunk } from "./planet.js";
 import { createShip, ship_rotation_sprite, movement} from "./ship.js";
-import { bullet, change_location, chunks, chunkX, chunkY, get_x, get_y, planet, ship } from "./types.js";
+import { bullet, change_location, chunks, chunkX, chunkY, get_x, get_y, planet, ship, keys_pressed} from "./types.js";
 
 //creates a screen
 const screen = createScreen(105, 50);
@@ -18,6 +18,9 @@ let shipChunkY: number = 0;
 let stop: boolean = false;
 //pauses the game
 let pause: boolean = true;
+let keys: keys_pressed = {w: false, a: false, s: false, d: false, r: false,
+                          up: false, left: false, down: false, right: false};
+
 const worldChunks: chunks = {}; // each chunk is defined by a 100x100 area (for now)
 const delay = 100; //milliseconds before next frame
 
@@ -29,11 +32,24 @@ function handleKeyDownEvent(event: KeyboardEvent): void {
     const key: string = event.key;
     switch(key) {
         case "d":
+            movement(key, playerShip);
+            keys.d = true;
+            break;
         case "a":
+            movement(key, playerShip);
+            keys.a = true;
+            break;
         case "w":
+            movement(key, playerShip);
+            keys.w = true;
+            break;
         case "s":
+            movement(key, playerShip);
+            keys.s = true;
+            break;
         case "r":
             movement(key, playerShip);
+            keys.r = true;
             break;
         case "p":
             pause = !pause;
@@ -42,14 +58,66 @@ function handleKeyDownEvent(event: KeyboardEvent): void {
             const chunk = getChunk(worldChunks, shipChunkX, shipChunkY);
             if( chunk != undefined){
             spawnBullet(chunk, get_x(playerShip), get_y(playerShip), playerShip.gameObject.rotAngle, 2, false);
+            }
+        case "ArrowUp":
+            console.log("keyDown up");
+            keys.up = true;
+            break;
+        case "ArrowLeft":
+            console.log("keyDown left");
+            keys.left = true;
+            break;
+        case "ArrowDown":
+            console.log("keyDown down");
+            keys.down = true;
+            break;
+        case "ArrowRight":
+            console.log("keyDown right");
+            keys.right = true;
+            break;
         }
-       
-      } 
-}
+    }
 
 //handles what happens when you let
 //go of a key.
 function handleKeyUpEvent(event: KeyboardEvent): void {
+    const key = event.key;
+    switch(key) {
+        case "d":
+            keys.d = false;
+            break;
+        case "a":
+            keys.a = false;
+            break;
+        case "w":
+            keys.w = false;
+            break;
+        case "s":
+            keys.s = false;
+            break;
+        case "r":
+            keys.r = false;
+            break;
+       
+      }
+    switch(key) {
+        case "ArrowUp":
+            console.log("keyUp up");
+            keys.up = true;
+            break;
+        case "ArrowLeft":
+            console.log("keyUp left");
+            keys.left = true;
+            break;
+        case "ArrowDown":
+            console.log("keyUp down");
+            keys.down = true;
+            break;
+        case "ArrowRight":
+            console.log("keyUp right");
+            keys.right = true;
+            break;
+    }
 }
 
 //simulates what happens in the world.
@@ -83,6 +151,7 @@ function ticker(): void{
         const surroundingBullets = gatherBulletList(worldChunks, shipChunkX, shipChunkY);
         simulate(surroundingPlanets, surroundingBullets);
         drawScreen(screen, surroundingPlanets, surroundingBullets, playerShip);
+        aim_ship(keys, playerShip, screen);
         const output = document.getElementById('output') as HTMLParagraphElement; 
         output.innerHTML = printer(screen);
     }

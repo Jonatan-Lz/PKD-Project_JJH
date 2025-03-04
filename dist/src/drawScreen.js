@@ -1,5 +1,5 @@
 import { is_null, head, tail } from "../lib/list.js";
-import { get_x, get_y, get_sprite } from "./types.js";
+import { get_x, get_y, get_sprite } from "./generalFunction.js";
 /**
  * Creates and returns an empty world
  * @returns an empty world
@@ -62,9 +62,7 @@ function drawCircle(world, radius, x, y, sprite) {
 }
 //writes the sprite on designated coordinates, on given world.
 function drawString(world, x, y, sprite) {
-    if (world[Math.floor(y)] != undefined && world[Math.floor(y)][Math.floor(x)] != undefined) {
-        world[Math.floor(y)][Math.floor(x)] = sprite;
-    }
+    world[y][x] = sprite;
 }
 /**
  * Redraws the world based on the parameters given

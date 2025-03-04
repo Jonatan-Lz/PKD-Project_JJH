@@ -1,5 +1,7 @@
 import{ length, List, is_null, head, tail } from "../lib/list.js"
-import{ get_x, get_y,get_sprite, planet, world, ship, bullet } from "./types.js"
+import{ planet, world, ship, bullet } from "./types.js"
+import{ get_x, get_y,get_sprite } from "./generalFunction.js"
+import { aim_ship } from "./ship.js";
 
 /**
  * Creates and returns an empty world

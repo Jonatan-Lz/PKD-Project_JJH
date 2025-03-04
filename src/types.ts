@@ -21,6 +21,8 @@ export type bullet = {tag: "bullet", team: boolean, gameObject: gameObject,
                //team true is friendly, false is enemy. lifeTime is ticks left until despawn
 export type planet = {tag: "planet", gameObject: gameObject, radius: number};
 export type generalObject = ship|planet|turret|bullet;
+export type keys_pressed = {w: Boolean, a: Boolean, s: Boolean, d: Boolean, r: Boolean,
+                            left: Boolean, up: Boolean, right: Boolean, down: Boolean};
 
 export const chunkSize: number = 100; // size of a chunk
 

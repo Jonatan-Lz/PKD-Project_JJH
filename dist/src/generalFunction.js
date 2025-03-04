@@ -1,5 +1,4 @@
-import { get_x, get_y } from "./types.js";
-import { head, is_null, tail } from "../lib/list.js";
+import { head, is_null, tail, pair } from "../lib/list.js";
 /**
  * Checks collision between two objects
  * @param object1 The first object
@@ -63,4 +62,20 @@ export function minDistCollisionForEach(mainObject, objectList, minDist) {
         newObjectList = tail(newObjectList);
     }
     return -1;
+}
+//gets x-coordinate of object
+export function get_x(object) {
+    return head(object.gameObject.location);
+}
+//gets y-coordinate of object
+export function get_y(object) {
+    return tail(object.gameObject.location);
+}
+//move object to given coordinates
+export function change_location(object, x, y) {
+    object.gameObject.location = pair(x, y);
+}
+//get sprite of object
+export function get_sprite(object) {
+    return object.gameObject.sprite;
 }
