@@ -1,16 +1,11 @@
 import { head, is_null, tail } from "../lib/list.js";
 import { gatherBulletList, moveAll, removeBullet, spawnBullet } from "./bullet.js";
 import { createScreen, drawScreen, printer } from "./drawScreen.js";
-import { collisionForEach } from "./generalFunction.js";
-import { createPlanet, gatherPlanetList, generatePlayerWorld } from "./planet.js";
+import { change_location, chunkX, chunkY, collisionForEach, get_x, get_y } from "./generalFunction.js";
+import { gatherPlanetList, generatePlayerWorld, getChunk } from "./planet.js";
 import { createShip, ship_rotation_sprite, movement } from "./ship.js";
-import { change_location, get_x, get_y } from "./types.js";
 //creates a screen
 const screen = createScreen(105, 50);
-//creates planets and puts them in a list
-let planetList = list(createPlanet(3.21, 4.3, 4.1), createPlanet(3.3, 35.23, 6.12), createPlanet(6.42, 14.2, 18.5));
-//creates an empty bullet list
-let bulletList = null;
 //makes the ship!
 let playerShip = createShip(0.5, 0, 0, "A", 200);
 //ships current chunks x pos
@@ -60,8 +55,6 @@ function handleKeyDownEvent(event) {
             if (chunk != undefined) {
                 spawnBullet(chunk, get_x(playerShip), get_y(playerShip), playerShip.gameObject.rotAngle, 2, false);
             }
-    }
-    switch (key) {
         case "ArrowUp":
             console.log("keyDown up");
             keys.up = true;
@@ -145,8 +138,9 @@ function ticker() {
         shipChunkY = chunkY(get_y(playerShip));
         generatePlayerWorld(worldChunks, shipChunkX, shipChunkY);
         const surroundingPlanets = gatherPlanetList(worldChunks, shipChunkX, shipChunkY);
-        simulate(surroundingPlanets);
-        drawScreen(screen, surroundingPlanets, playerShip);
+        const surroundingBullets = gatherBulletList(worldChunks, shipChunkX, shipChunkY);
+        simulate(surroundingPlanets, surroundingBullets);
+        drawScreen(screen, surroundingPlanets, surroundingBullets, playerShip);
         const output = document.getElementById('output');
         output.innerHTML = printer(screen);
     }

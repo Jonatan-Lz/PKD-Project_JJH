@@ -1,6 +1,6 @@
 import { append, head, is_null, pair, remove, tail } from "../lib/list.js";
+import { get_chunkY, get_chunX as get_chunkX, get_x, get_y, chunkY, chunkX, createGameobject, change_location } from "./generalFunction.js";
 import { getChunk } from "./planet.js";
-import { change_location, chunkX, chunkY, createGameobject, get_chunkY, get_chunX as get_chunkX, get_x, get_y } from "./types.js";
 const liftime = 100;
 export function moveAll(world, bulletList) {
     while (!is_null(bulletList)) {

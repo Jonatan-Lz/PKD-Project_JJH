@@ -1,10 +1,10 @@
 import { for_each, head, is_null, list, List, tail } from "../lib/list.js";
 import { gatherBulletList, moveAll, removeBullet, spawnBullet } from "./bullet.js";
 import { createScreen, drawScreen, printer} from "./drawScreen.js";
-import { collision, collisionForEach } from "./generalFunction.js";
+import { change_location, chunkX, chunkY, collision, collisionForEach, get_x, get_y } from "./generalFunction.js";
 import { createPlanet, gatherPlanetList, generatePlayerWorld, getChunk } from "./planet.js";
 import { createShip, ship_rotation_sprite, movement} from "./ship.js";
-import { bullet, change_location, chunks, chunkX, chunkY, get_x, get_y, planet, ship, keys_pressed} from "./types.js";
+import { bullet, chunks, planet, ship, keys_pressed} from "./types.js";
 
 //creates a screen
 const screen = createScreen(105, 50);
@@ -151,7 +151,6 @@ function ticker(): void{
         const surroundingBullets = gatherBulletList(worldChunks, shipChunkX, shipChunkY);
         simulate(surroundingPlanets, surroundingBullets);
         drawScreen(screen, surroundingPlanets, surroundingBullets, playerShip);
-        aim_ship(keys, playerShip, screen);
         const output = document.getElementById('output') as HTMLParagraphElement; 
         output.innerHTML = printer(screen);
     }

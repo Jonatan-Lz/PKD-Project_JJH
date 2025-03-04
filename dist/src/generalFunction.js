@@ -1,4 +1,5 @@
-import { head, is_null, tail, pair } from "../lib/list.js";
+import { chunkSize } from "./types.js";
+import { head, is_null, pair, tail } from "../lib/list.js";
 /**
  * Checks collision between two objects
  * @param object1 The first object
@@ -78,4 +79,20 @@ export function change_location(object, x, y) {
 //get sprite of object
 export function get_sprite(object) {
     return object.gameObject.sprite;
+}
+export function get_chunX(object) {
+    return object.gameObject.chunkX;
+}
+//gets y-coordinate of object
+export function get_chunkY(object) {
+    return object.gameObject.chunkY;
+}
+export function createGameobject(x, y, radius, hp, sprite) {
+    return { color: null, location: pair(x, y), hitbox: radius, rotAngle: 0, hp, sprite, chunkX: chunkX(x), chunkY: chunkY(y) };
+}
+export function chunkX(x) {
+    return Math.floor(x / chunkSize);
+}
+export function chunkY(y) {
+    return Math.floor(y / chunkSize);
 }

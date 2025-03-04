@@ -1,6 +1,6 @@
 import { keys_pressed, ship, world } from "./types.js";
 import { Pair, pair } from "../lib/list.js";
-import { get_x, get_y } from "./generalFunction.js";
+import { createGameobject, get_x, get_y } from "./generalFunction.js";
 import { drawString } from "./drawScreen.js"
 const accel = 0.1;
 const deAccel = 0.1

@@ -1,5 +1,5 @@
-import { generalObject} from "./types.js";
-import { head, is_null, List, tail } from "../lib/list.js"
+import { chunkSize, gameObject, generalObject} from "./types.js";
+import { head, is_null, List, pair, tail } from "../lib/list.js"
 /**
  * Checks collision between two objects
  * @param object1 The first object
@@ -87,4 +87,24 @@ export function change_location(object: generalObject, x: number, y: number): vo
 //get sprite of object
 export function get_sprite(object: generalObject): string{
     return object.gameObject.sprite
+} 
+export function get_chunX(object: generalObject): number{
+    return object.gameObject.chunkX;
+}
+
+//gets y-coordinate of object
+export function get_chunkY(object: generalObject): number{
+    return object.gameObject.chunkY;
+}
+
+export function createGameobject(x: number, y:number, radius: number, hp: number, sprite: string): gameObject{
+    return {color: null, location: pair(x, y), hitbox: radius, rotAngle: 0, hp, sprite, chunkX: chunkX(x), chunkY: chunkY(y)}
+}
+
+export function chunkX(x: number): number{
+    return Math.floor(x/chunkSize);
+}
+
+export function chunkY(y: number): number{
+    return Math.floor(y/chunkSize);
 }

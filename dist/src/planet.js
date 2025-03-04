@@ -1,6 +1,6 @@
-import { chunkSize, createGameobject } from "./types.js";
+import { chunkSize } from "./types.js";
 import { append, head, is_null, pair, tail } from "../lib/list.js";
-import { minDistCollisionForEach } from "./generalFunction.js";
+import { createGameobject, minDistCollisionForEach } from "./generalFunction.js";
 const amount = 5; //number of planets in a chunk
 const minSize = 4; //Planets min size
 const maxSize = 10; // planets max size

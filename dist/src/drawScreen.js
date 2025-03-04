@@ -61,8 +61,10 @@ function drawCircle(world, radius, x, y, sprite) {
     }
 }
 //writes the sprite on designated coordinates, on given world.
-function drawString(world, x, y, sprite) {
-    world[y][x] = sprite;
+export function drawString(world, x, y, sprite) {
+    if (world[Math.floor(y)] != undefined && world[Math.floor(y)][Math.floor(x)] != undefined) {
+        world[Math.floor(y)][Math.floor(x)] = sprite;
+    }
 }
 /**
  * Redraws the world based on the parameters given
@@ -89,4 +91,11 @@ export function drawScreen(world, planetList, bulletList, ship) {
         newBulletList = tail(newBulletList);
     }
     drawString(world, halfWidth, halfHeight, get_sprite(ship));
+    aim_ship(world, ship, halfWidth, halfHeight);
+}
+export function aim_ship(world, ship, width, height) {
+    const angle = ship.gameObject.rotAngle;
+    for (let i = 2; i <= 6; i += 2) {
+        drawString(world, width + i * Math.cos(angle), height + i * Math.sin(angle), "+");
+    }
 }

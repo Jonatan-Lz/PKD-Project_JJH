@@ -1,7 +1,6 @@
 import{ length, List, is_null, head, tail } from "../lib/list.js"
 import{ planet, world, ship, bullet } from "./types.js"
 import{ get_x, get_y,get_sprite } from "./generalFunction.js"
-import { aim_ship } from "./ship.js";
 
 /**
  * Creates and returns an empty world
@@ -68,7 +67,7 @@ function drawCircle(world: world, radius: number, x: number, y: number, sprite: 
 }
 
 //writes the sprite on designated coordinates, on given world.
-function drawString(world: world, x: number, y: number, sprite: string): void{
+export function drawString(world: world, x: number, y: number, sprite: string): void{
     if(world[Math.floor(y)] != undefined && world[Math.floor(y)][Math.floor(x)] != undefined){
         world[Math.floor(y)][Math.floor(x)] = sprite;
     }
@@ -105,4 +104,12 @@ export function drawScreen(world: world, planetList: List<planet>, bulletList: L
         newBulletList = tail(newBulletList);
     }
     drawString(world, halfWidth, halfHeight, get_sprite(ship));
+    aim_ship(world, ship, halfWidth, halfHeight);
+}
+
+export function aim_ship(world: world, ship: ship, width: number, height:number){
+    const angle = ship.gameObject.rotAngle;
+    for(let i = 2; i <= 6; i += 2){
+        drawString(world, width + i * Math.cos(angle), height + i * Math.sin(angle), "+");
+    }
 }

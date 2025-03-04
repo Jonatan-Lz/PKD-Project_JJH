@@ -1,4 +1,5 @@
-import { pair } from "../lib/list.js";
+import { createGameobject, get_x, get_y } from "./generalFunction.js";
+import { drawString } from "./drawScreen.js";
 const accel = 0.1;
 const deAccel = 0.1;
 const maxVel = 0.2;
