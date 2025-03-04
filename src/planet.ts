@@ -1,4 +1,4 @@
-import {chunk, chunks, chunkSize, planet} from "./types.js";
+import {chunk, world, chunkSize, planet} from "./types.js";
 import {append, head, is_null, List, list, Pair, pair, tail} from "../lib/list.js";
 import {createGameobject, minDistCollisionForEach } from "./generalFunction.js";
 
@@ -24,9 +24,8 @@ export function createPlanet(radius: number, x: number, y: number): planet{
  * @param world the world
  * @param x the players chunks x
  * @param y the players chunks y
- * @param chunkSize the size of a chunk
  */
-export function generatePlayerWorld(world: chunks, x: number, y: number): void{
+export function generatePlayerWorld(world: world, x: number, y: number): void{
     let undefindChunks = gatherUndefinedChunks(world, x, y);
     while(!is_null(undefindChunks)){
         const chunk = head(undefindChunks);
@@ -44,7 +43,7 @@ export function generatePlayerWorld(world: chunks, x: number, y: number): void{
  * @param y the origin y
  * @returns a list of the undefined chunks represented as pair(x, y) 
  */
-function gatherUndefinedChunks(world: chunks, x: number, y: number): List<Pair<number, number>>{
+function gatherUndefinedChunks(world: world, x: number, y: number): List<Pair<number, number>>{
     let chunks = null;
     for(let chunkX = -1; chunkX <= 1; chunkX++){
         for(let chunkY = -1; chunkY <= 1; chunkY++){
@@ -62,10 +61,9 @@ function gatherUndefinedChunks(world: chunks, x: number, y: number): List<Pair<n
  * @param world the world
  * @param x the chunks x position
  * @param y the chunks y position
- * @param chunkSize the chunks size
  * @returns a chunk
  */
-export function generateChunk(world: chunks, x: number, y: number, chunkSize: number): chunk{
+export function generateChunk(world: world, x: number, y: number, chunkSize: number): chunk{
     const currentChunk = getChunk(world, x, y)
     if (currentChunk === undefined){
         const surroundingPlanets = gatherPlanetList(world, x, y);
@@ -85,7 +83,7 @@ export function generateChunk(world: chunks, x: number, y: number, chunkSize: nu
  * @param y current chunk y
  * @returns list of planets
  */
-export function gatherPlanetList(world: chunks, x: number, y: number): List<planet>{
+export function gatherPlanetList(world: world, x: number, y: number): List<planet>{
     let planetList = null;
     for(let chunkX = -1; chunkX <= 1; chunkX++){
         for(let chunkY = -1; chunkY <= 1; chunkY++){
@@ -103,7 +101,6 @@ export function gatherPlanetList(world: chunks, x: number, y: number): List<plan
  * @param planets list of planets in the surrounding chunks 3x3
  * @param xOffset what xOffset the planets should have (chunk 3,-2: xOffset = 300)
  * @param yOffset what yOffset the planets should have (chunk 3,-2: yOffset = -200)
- * @param chunkSize the size of a chunk
  * @returns a list of planets that do not collide with eachother
  */
 function generatePlanetList(planets: List<planet>, xOffset: number, yOffset: number): List<planet>{
@@ -121,6 +118,6 @@ function generatePlanetList(planets: List<planet>, xOffset: number, yOffset: num
 }
 
 //Gets the chunk of x, y
-export function getChunk(world: chunks, x: number, y: number): chunk|undefined{
+export function getChunk(world: world, x: number, y: number): chunk|undefined{
     return world[x + "," + y];
 }

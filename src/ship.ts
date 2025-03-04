@@ -1,4 +1,4 @@
-import { keys_pressed, ship, world } from "./types.js";
+import { keys_pressed, ship, screen } from "./types.js";
 import { Pair, pair } from "../lib/list.js";
 import { createGameobject, get_x, get_y } from "./generalFunction.js";
 import { drawString } from "./drawScreen.js"
@@ -113,7 +113,7 @@ export function ship_rotation_sprite(ship: ship): void {
  * @param ship ship thats gonna aim
  * @param world world to draw the aim on
  */
-export function aim_ship(keys: keys_pressed, ship: ship, world: world): void {
+export function aim_ship(keys: keys_pressed, ship: ship, world: screen): void {
     const ship_x: number = get_x(ship);
     const ship_y: number = get_y(ship);
     let print_x: number = 0;

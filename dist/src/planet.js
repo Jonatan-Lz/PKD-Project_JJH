@@ -21,7 +21,6 @@ export function createPlanet(radius, x, y) {
  * @param world the world
  * @param x the players chunks x
  * @param y the players chunks y
- * @param chunkSize the size of a chunk
  */
 export function generatePlayerWorld(world, x, y) {
     let undefindChunks = gatherUndefinedChunks(world, x, y);
@@ -57,7 +56,6 @@ function gatherUndefinedChunks(world, x, y) {
  * @param world the world
  * @param x the chunks x position
  * @param y the chunks y position
- * @param chunkSize the chunks size
  * @returns a chunk
  */
 export function generateChunk(world, x, y, chunkSize) {
@@ -98,7 +96,6 @@ export function gatherPlanetList(world, x, y) {
  * @param planets list of planets in the surrounding chunks 3x3
  * @param xOffset what xOffset the planets should have (chunk 3,-2: xOffset = 300)
  * @param yOffset what yOffset the planets should have (chunk 3,-2: yOffset = -200)
- * @param chunkSize the size of a chunk
  * @returns a list of planets that do not collide with eachother
  */
 function generatePlanetList(planets, xOffset, yOffset) {

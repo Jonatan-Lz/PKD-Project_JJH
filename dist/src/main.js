@@ -93,8 +93,6 @@ function handleKeyUpEvent(event) {
         case "r":
             keys.r = false;
             break;
-    }
-    switch (key) {
         case "ArrowUp":
             console.log("keyUp up");
             keys.up = true;
@@ -120,6 +118,7 @@ function simulate(planets, bullets) {
     if (null != collisionForEach(playerShip, planets)) {
         stop = true;
     }
+    //checks collision for each bullet
     let newBulletList = bullets;
     while (!is_null(newBulletList)) {
         const bullet = head(newBulletList);

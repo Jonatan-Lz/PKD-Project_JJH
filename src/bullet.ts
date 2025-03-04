@@ -1,11 +1,11 @@
 import { append, for_each, head, is_null, List, pair, remove, tail } from "../lib/list.js"
 import { collision, get_chunkY, get_chunkX as get_chunkX, get_x, get_y, chunkY, chunkX, createGameobject, change_location } from "./generalFunction.js";
 import { getChunk } from "./planet.js";
-import { bullet, chunk, chunks, chunkSize, generalObject} from "./types.js";
+import { bullet, chunk, world, chunkSize, generalObject} from "./types.js";
 
 const liftime = 100;
 
-export function moveAll(world: chunks, bulletList: List<bullet>): void{
+export function moveAll(world: world, bulletList: List<bullet>): void{
     while(!is_null(bulletList)){
         const bullet = head(bulletList);
         moveBullet(world, bullet);
@@ -13,7 +13,7 @@ export function moveAll(world: chunks, bulletList: List<bullet>): void{
     }
 }
 
-function moveBullet(world: chunks, bullet: bullet): void{
+function moveBullet(world: world, bullet: bullet): void{
     const location = bullet.gameObject.location;
     const newX = head(location) + bullet.xVel;
     const newY = tail(location) + bullet.yVel;
@@ -44,7 +44,7 @@ function createBullet(x:number, y:number, xVel:number, yVel:number, sprite:strin
  * @param y current chunk y
  * @returns list of bullets
  */
-export function gatherBulletList(world: chunks, x: number, y: number): List<bullet>{
+export function gatherBulletList(world: world, x: number, y: number): List<bullet>{
     let bulletList = null;
     for(let chunkX = -1; chunkX <= 1; chunkX++){
         for(let chunkY = -1; chunkY <= 1; chunkY++){
@@ -57,19 +57,19 @@ export function gatherBulletList(world: chunks, x: number, y: number): List<bull
     return bulletList;
 }
 
-export function changeBulletChunk(world: chunks, bullet: bullet): void{
+export function changeBulletChunk(world: world, bullet: bullet): void{
     removeBullet(world, bullet);
     addBullet(world, bullet)
 }
 
-export function removeBullet(world: chunks, bullet: bullet): void{
+export function removeBullet(world: world, bullet: bullet): void{
     const chunk = getChunk(world, get_chunkX(bullet), get_chunkY(bullet));
     if(chunk != undefined){
         chunk.bullets = remove(bullet, chunk.bullets);
     }
 }
 
-export function addBullet(world: chunks, bullet: bullet): void{
+export function addBullet(world: world, bullet: bullet): void{
     const newChunkX = chunkX(get_x(bullet));
     const newChunkY = chunkY(get_y(bullet));
     const chunk = getChunk(world, newChunkX, newChunkY);

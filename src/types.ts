@@ -1,7 +1,7 @@
 import{ List, Pair, head, pair, tail } from "../lib/list.js"
 
 //A world is defined as a 2-dimensional array with each index as a letter, to signal what is there.
-export type world = Array<Array<string>>;
+export type screen = Array<Array<string>>;
 export type gameObject = {
     color: null
     location: Pair<number, number> //head is x coordinate, tail is y coordinate
@@ -12,7 +12,7 @@ export type gameObject = {
     chunkX: number
     chunkY: number
 };
-export type chunks = {[key: string]: chunk}; // refer to a specific chunk by "x,y"
+export type world = {[key: string]: chunk}; // refer to a specific chunk by "x,y"
 export type chunk = {planets: List<planet>, bullets: List<bullet>, turrets: List<turret>};
 export type ship = {tag: "ship", gameObject: gameObject, xVel: number, yVel: number};
 export type turret = {tag: "turret", gameObject: gameObject};

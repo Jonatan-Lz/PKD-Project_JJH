@@ -80,7 +80,7 @@ export function change_location(object, x, y) {
 export function get_sprite(object) {
     return object.gameObject.sprite;
 }
-export function get_chunX(object) {
+export function get_chunkX(object) {
     return object.gameObject.chunkX;
 }
 //gets y-coordinate of object

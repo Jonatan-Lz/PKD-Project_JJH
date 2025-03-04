@@ -21,81 +21,81 @@ export function createScreen(width, height) {
     return screen;
 }
 //clears the screen (turns each index to "_")
-function clearScreen(world) {
-    for (let y = 0; y < world.length; y++) {
-        for (let x = 0; x < world[y].length; x++) {
-            world[y][x] = "_";
+function clearScreen(screen) {
+    for (let y = 0; y < screen.length; y++) {
+        for (let x = 0; x < screen[y].length; x++) {
+            screen[y][x] = "_";
         }
     }
 }
 /**
  * Turns a world into a string to be drawn on the website.
- * @param world - world to turn to string
+ * @param screen - world to turn to string
  * @returns the world in string format
  */
-export function printer(world) {
-    let screen = "";
-    for (let y = 0; y < world.length; y++) {
-        for (let x = 0; x < world[y].length; x++) {
-            screen = screen + " " + world[y][x];
+export function printer(screen) {
+    let screenString = "";
+    for (let y = 0; y < screen.length; y++) {
+        for (let x = 0; x < screen[y].length; x++) {
+            screenString = screenString + " " + screen[y][x];
         }
-        screen = screen + "<br>";
+        screenString = screenString + "<br>";
     }
-    return screen;
+    return screenString;
 }
 /**
  * Draws a circle in a given world
- * @param world world to draw on
+ * @param screen world to draw on
  * @param radius radius of the planet
  * @param x x-coordinate of the planet center
  * @param y y-coordinate of the planet center
  * @param sprite graphics for the planet
  */
-function drawCircle(world, radius, x, y, sprite) {
-    for (let y1 = 0; y1 < world.length; y1++) {
-        for (let x1 = 0; x1 < world[y1].length; x1++) {
+function drawCircle(screen, radius, x, y, sprite) {
+    for (let y1 = 0; y1 < screen.length; y1++) {
+        for (let x1 = 0; x1 < screen[y1].length; x1++) {
             if (Math.sqrt((Math.pow((x1 - x), 2) + Math.pow((y1 - y), 2))) <= radius) {
-                world[y1][x1] = sprite;
+                screen[y1][x1] = sprite;
             }
         }
     }
 }
 //writes the sprite on designated coordinates, on given world.
-export function drawString(world, x, y, sprite) {
-    if (world[Math.floor(y)] != undefined && world[Math.floor(y)][Math.floor(x)] != undefined) {
-        world[Math.floor(y)][Math.floor(x)] = sprite;
+export function drawString(screen, x, y, sprite) {
+    if (screen[Math.floor(y)] != undefined && screen[Math.floor(y)][Math.floor(x)] != undefined) {
+        screen[Math.floor(y)][Math.floor(x)] = sprite;
     }
 }
 /**
  * Redraws the world based on the parameters given
- * @param world world to draw
+ * @param screen world to draw
  * @param planetList planets to put on the world
  * @param ship the ship
  */
-export function drawScreen(world, planetList, bulletList, ship) {
-    const halfWidth = Math.floor(world[0].length / 2);
-    const halfHeight = Math.floor(world.length / 2);
+export function drawScreen(screen, planetList, bulletList, ship) {
+    const halfWidth = Math.floor(screen[0].length / 2);
+    const halfHeight = Math.floor(screen.length / 2);
     let ship_x = get_x(ship);
     let ship_y = get_y(ship);
-    clearScreen(world);
+    clearScreen(screen);
     let newPlanetList = planetList;
     let newBulletList = bulletList;
     while (!is_null(newPlanetList)) {
         const planet = head(newPlanetList);
-        drawCircle(world, planet.radius, get_x(planet) + halfWidth - ship_x, get_y(planet) + halfHeight - ship_y, get_sprite(planet));
+        drawCircle(screen, planet.radius, get_x(planet) + halfWidth - ship_x, get_y(planet) + halfHeight - ship_y, get_sprite(planet));
         newPlanetList = tail(newPlanetList);
     }
     while (!is_null(newBulletList)) {
         const bullet = head(newBulletList);
-        drawString(world, get_x(bullet) + halfWidth - ship_x, get_y(bullet) + halfHeight - ship_y, get_sprite(bullet));
+        drawString(screen, get_x(bullet) + halfWidth - ship_x, get_y(bullet) + halfHeight - ship_y, get_sprite(bullet));
         newBulletList = tail(newBulletList);
     }
-    drawString(world, halfWidth, halfHeight, get_sprite(ship));
-    aim_ship(world, ship, halfWidth, halfHeight);
+    drawString(screen, halfWidth, halfHeight, get_sprite(ship));
+    aim_ship(screen, ship, halfWidth, halfHeight);
 }
-export function aim_ship(world, ship, width, height) {
+export function aim_ship(screen, ship, width, height) {
     const angle = ship.gameObject.rotAngle;
     for (let i = 2; i <= 6; i += 2) {
-        drawString(world, width + i * Math.cos(angle), height + i * Math.sin(angle), "+");
+        drawString(screen, width + i * Math.cos(angle), height + i * Math.sin(angle), "+");
     }
 }

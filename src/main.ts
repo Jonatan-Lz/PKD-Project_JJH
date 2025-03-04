@@ -4,7 +4,7 @@ import { createScreen, drawScreen, printer} from "./drawScreen.js";
 import { change_location, chunkX, chunkY, collision, collisionForEach, get_x, get_y } from "./generalFunction.js";
 import { createPlanet, gatherPlanetList, generatePlayerWorld, getChunk } from "./planet.js";
 import { createShip, ship_rotation_sprite, movement} from "./ship.js";
-import { bullet, chunks, planet, ship, keys_pressed} from "./types.js";
+import { bullet, world, planet, ship, keys_pressed} from "./types.js";
 
 //creates a screen
 const screen = createScreen(105, 50);
@@ -21,7 +21,7 @@ let pause: boolean = true;
 let keys: keys_pressed = {w: false, a: false, s: false, d: false, r: false,
                           up: false, left: false, down: false, right: false};
 
-const worldChunks: chunks = {}; // each chunk is defined by a 100x100 area (for now)
+const worldChunks: world = {}; // each chunk is defined by a 100x100 area (for now)
 const delay = 100; //milliseconds before next frame
 
 //handles input.
@@ -98,9 +98,6 @@ function handleKeyUpEvent(event: KeyboardEvent): void {
         case "r":
             keys.r = false;
             break;
-       
-      }
-    switch(key) {
         case "ArrowUp":
             console.log("keyUp up");
             keys.up = true;
@@ -129,6 +126,7 @@ function simulate(planets: List<planet>, bullets: List<bullet>): void{
     if(null != collisionForEach(playerShip, planets)){
         stop = true;
     }
+    //checks collision for each bullet
     let newBulletList = bullets;
     while(!is_null(newBulletList)){
         const bullet = head(newBulletList)
