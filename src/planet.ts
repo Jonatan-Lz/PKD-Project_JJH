@@ -1,12 +1,15 @@
-import {chunk, world, chunkSize, planet, turret} from "./types.js";
-import {append, head, is_null, List, list, Pair, pair, tail} from "../lib/list.js";
-import {createGameobject, minDistCollisionForEach, get_x, get_y} from "./generalFunction.js";
+import {chunk, world, chunkSize, planet, turret, ship} from "./types.js";
+import {append, head, is_null, List, list, Pair, pair, remove, tail} from "../lib/list.js";
+import {createGameobject, minDistCollisionForEach, get_x, get_y, minDistCollision, get_chunkX, get_chunkY, calc_chunkX, calc_chunkY} from "./generalFunction.js";
+import { spawnBullet } from "./bullet.js";
 
 const amount = 5; //number of planets in a chunk
 const minSize = 4; //Planets min size
 const maxSize = 10; // planets max size
 const minDist = 7; // minimum distance between planets
-
+const turretsPerPlanet = 2;
+const turretCooldown = 50;
+const turretRange = 50;
 /**
  * Creates and returns a planet
  * @param radius radius of planet
@@ -15,17 +18,71 @@ const minDist = 7; // minimum distance between planets
  * @returns created planet
  */
 export function createPlanet(radius: number, x: number, y: number): planet{
-    return {tag: "planet", gameObject: 
-            createGameobject(x, y, radius, 1, "O"),
-            radius: radius,
-            turrets: list()};
+    const planet: planet = {tag: "planet", gameObject: 
+        createGameobject(x, y, radius, 1, "O"),
+        radius: radius,
+        turrets: list()};
+    for (let i = 0; i < turretsPerPlanet; i++){
+        addTurretToPlanet(planet);
+    }
+    return planet;
 }
 
-// a basic turret at 0, 0
-export const basicTurret: turret = {
-    tag: "turret", 
-    gameObject: createGameobject(0, 0, 1, 1, "X")
-};
+/**
+ * Creates and returns a tuuret
+ * @param x x-coordinate of turret
+ * @param y y-coordinate of turret
+ * @returns created turret
+ */
+export function createTurret(x: number, y: number, planet: planet): turret{
+    return {tag: "turret", gameObject: 
+            createGameobject(x, y, 1, 1, "¤"), cooldown: turretCooldown * Math.random(), planet};
+}
+
+/**
+ * Shoots all turrets towards player
+ * @param world The world
+ * @param turrteList List of turrets
+ * @param ship players ship
+ */
+export function shootTurrets(world: world, turrteList: List<turret>, ship: ship): void{
+    while(!is_null(turrteList)){
+        const turret = head(turrteList);
+        if(turret.cooldown <= 0){
+            const x_dist = (get_x(ship) - get_x(turret));
+            const y_dist = (get_y(ship) - get_y(turret));
+            const dist = Math.sqrt(x_dist ** 2 + y_dist ** 2);
+            if(dist < turretRange){
+                const currentChunk = getChunk(world, calc_chunkX(get_x(turret)), calc_chunkY(get_y(turret)));
+                let angle = Math.acos(x_dist / dist);
+                if(y_dist/dist < 0){
+                    angle *= -1;
+                }
+                if(currentChunk != undefined){
+                    spawnBullet(currentChunk, get_x(turret), get_y(turret), angle, false);
+                }
+            }
+            turret.cooldown = turretCooldown;
+        } else {
+            turret.cooldown--;
+        }
+        turrteList = tail(turrteList);
+    }
+}
+
+/**
+ * @param planetList the planets turrets
+ * @returns list of turrets
+ */
+export function gatherTurretList(planetList: List<planet>): List<turret>{
+    let turretList = null;
+    while(!is_null(planetList)){
+        const planet = head(planetList);
+        turretList = append(planet.turrets, turretList);
+        planetList = tail(planetList);
+    }
+    return turretList;
+}
 
 /**
  * Creates a basic turret to a given planet (((((WIP)))))
@@ -33,17 +90,17 @@ export const basicTurret: turret = {
  * @returns the planet with the added turret
  */
 export function addTurretToPlanet(planet: planet): planet {
-    var turret = basicTurret;
     function randomXYOnPlanetSurface(planet: planet): Pair<number, number> {
-        const x = head(planet.gameObject.location) - planet.radius + Math.floor(Math.random() * 2 * planet.radius + 1); //chooses a random x within the planet's diameter
-        // (x - a)^2 + (y - b)^2 = r^2    ==>    sqrt((y - b)^2) = sqrt(r^2 - (x - a)^2)    ==>    y = sqrt(r^2 - (x - a)^2) - b
-        let y = Math.sqrt(planet.radius**2 - (x - head(planet.gameObject.location))**2) - tail(planet.gameObject.location); // y calculated through (x - a)^2 + (y - b)^2 = r^2 
-        //if (Math.random() < 0.5) {y = -y} else {} // 50% to make y negative for +- from taking square root
+        const randomRad = Math.random() * Math.PI * 2
+        const x = get_x(planet) + (planet.radius + 1) * Math.cos(randomRad); 
+        //chooses a random x within the planet's diameter
+        const y = get_y(planet) + (planet.radius + 1) * Math.sin(randomRad); 
+        //chooses a random y within the planet's diameter
         return pair(x, y);
     }
-    //turret.gameObject.location = randomXYOnPlanetSurface(planet);
-    turret.gameObject.location = pair(get_x(planet) + planet.radius + 1, get_y(planet)) //temp test
-    planet.turrets = append(planet.turrets, list(turret));
+    const x_y = randomXYOnPlanetSurface(planet);
+    const turret = createTurret(head(x_y), tail(x_y), planet);
+    planet.turrets = pair(turret, planet.turrets);
     return planet;
 }
 
@@ -59,8 +116,16 @@ export function generatePlayerWorld(world: world, x: number, y: number): void{
         const chunk = head(undefindChunks);
         const chunkX = head(chunk);
         const chunkY = tail(chunk);
-        world[chunkX + "," + chunkY] = generateChunk(world, chunkX, chunkY, chunkSize);
+        world[chunkX + "," + chunkY] = generateChunk(world, chunkX, chunkY);
         undefindChunks = tail(undefindChunks);
+    }
+}
+
+export function removeTurret(turret:turret, world:world): void{
+    const planet = turret.planet;
+    planet.turrets = remove(turret, planet.turrets);
+    if(is_null(planet.turrets)){
+        blowUpPlanet(planet, world);
     }
 }
 
@@ -91,7 +156,7 @@ function gatherUndefinedChunks(world: world, x: number, y: number): List<Pair<nu
  * @param y the chunks y position
  * @returns a chunk
  */
-export function generateChunk(world: world, x: number, y: number, chunkSize: number): chunk{
+export function generateChunk(world: world, x: number, y: number): chunk{
     const currentChunk = getChunk(world, x, y)
     if (currentChunk === undefined){
         const surroundingPlanets = gatherPlanetList(world, x, y);
@@ -143,6 +208,14 @@ function generatePlanetList(planets: List<planet>, xOffset: number, yOffset: num
         planetList = pair(planet, planetList);
     }
     return planetList;
+}
+
+//destoys a planet
+export function blowUpPlanet(planet:planet, world: world){
+    const chunk = getChunk(world, get_chunkX(planet), get_chunkY(planet));
+    if(chunk != undefined){
+        chunk.planets = remove(planet, chunk.planets);
+    }
 }
 
 //Gets the chunk of x, y

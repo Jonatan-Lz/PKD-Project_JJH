@@ -79,6 +79,11 @@ export function get_y(object: generalObject): number{
     return tail(object.gameObject.location);
 }
 
+//gets x-coordinate of object
+export function get_hp(object: generalObject): number{
+    return object.gameObject.hp;
+}
+
 //move object to given coordinates
 export function change_location(object: generalObject, x: number, y: number): void{
     object.gameObject.location = pair(x, y);
@@ -98,13 +103,13 @@ export function get_chunkY(object: generalObject): number{
 }
 
 export function createGameobject(x: number, y:number, radius: number, hp: number, sprite: string): gameObject{
-    return {color: null, location: pair(x, y), hitbox: radius, rotAngle: 0, hp, sprite, chunkX: chunkX(x), chunkY: chunkY(y)}
+    return {color: null, location: pair(x, y), hitbox: radius, rotAngle: 0, hp, sprite, chunkX: calc_chunkX(x), chunkY: calc_chunkY(y)}
 }
 
-export function chunkX(x: number): number{
+export function calc_chunkX(x: number): number{
     return Math.floor(x/chunkSize);
 }
 
-export function chunkY(y: number): number{
+export function calc_chunkY(y: number): number{
     return Math.floor(y/chunkSize);
 }

@@ -15,11 +15,11 @@ export type gameObject = {
 export type world = {[key: string]: chunk}; // refer to a specific chunk by "x,y"
 export type chunk = {planets: List<planet>, bullets: List<bullet>, turrets: List<turret>};
 export type ship = {tag: "ship", gameObject: gameObject, xVel: number, yVel: number};
-export type turret = {tag: "turret", gameObject: gameObject};
-export type bullet = {tag: "bullet", team: boolean, gameObject: gameObject, 
+export type turret = {tag: "turret", gameObject: gameObject, cooldown: number, planet: planet};
+export type bullet = {tag: "bullet", friendly: boolean, gameObject: gameObject, 
                xVel: number, yVel: number, lifeTime: number};
-               //team true is friendly, false is enemy. lifeTime is ticks left until despawn
-export type planet = {tag: "planet", gameObject: gameObject, radius: number, turrets: List<turret | null>};
+               //friendly = true if the bullets is from your ship false otherwise. lifeTime is ticks left until despawn
+export type planet = {tag: "planet", gameObject: gameObject, radius: number, turrets: List<turret>};
 export type generalObject = ship|planet|turret|bullet;
 export type keys_pressed = {w: Boolean, a: Boolean, s: Boolean, d: Boolean, r: Boolean,
                             left: Boolean, up: Boolean, right: Boolean, down: Boolean};

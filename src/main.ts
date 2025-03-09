@@ -1,10 +1,10 @@
 import { for_each, head, is_null, list, List, tail, pair } from "../lib/list.js";
 import { gatherBulletList, moveAll, removeBullet, spawnBullet } from "./bullet.js";
 import { createScreen, drawScreen, printer} from "./drawScreen.js";
-import { change_location, chunkX, chunkY, collision, collisionForEach, createGameobject, get_x, get_y } from "./generalFunction.js";
-import { createPlanet, addTurretToPlanet, gatherPlanetList, generatePlayerWorld, getChunk } from "./planet.js";
+import { change_location, calc_chunkX, calc_chunkY, collision, collisionForEach, createGameobject, get_x, get_y, get_hp } from "./generalFunction.js";
+import { createPlanet, addTurretToPlanet, gatherPlanetList, generatePlayerWorld, getChunk, gatherTurretList, shootTurrets, removeTurret } from "./planet.js";
 import { createShip, ship_rotation_sprite, movement , aimShipTurret} from "./ship.js";
-import { bullet, world, planet, ship, keys_pressed} from "./types.js";
+import { bullet, world, planet, ship, keys_pressed, turret} from "./types.js";
 
 const randomassplanet: planet = addTurretToPlanet({tag: "planet",
                                 gameObject: createGameobject(-25, -10, 8, 1, "O"),
@@ -15,7 +15,7 @@ const randomassplanet: planet = addTurretToPlanet({tag: "planet",
 //creates a screen
 const screen = createScreen(105, 50);
 //makes the ship!
-let playerShip: ship = createShip(0.5, 0, 0, "A", 200);
+let playerShip: ship = createShip(0.5, 0, 0, "A");
 //ships current chunks x pos
 let shipChunkX: number = 0;
 //ships current chunks y pos
@@ -36,6 +36,9 @@ const delay = 40; //milliseconds before next frame
 //p -> pause
 //r -> stop ship
 function handleKeyDownEvent(event: KeyboardEvent): void {
+    if(pause){
+        pause = false;
+    }
     const key: string = event.key;
     switch(key) {
         case "d":
@@ -54,12 +57,12 @@ function handleKeyDownEvent(event: KeyboardEvent): void {
             keys.r = true;
             break;
         case "p":
-            pause = !pause;
+            pause = true;
             break;
         case "f":
             const chunk = getChunk(worldChunks, shipChunkX, shipChunkY);
             if( chunk != undefined){
-                spawnBullet(chunk, get_x(playerShip), get_y(playerShip), playerShip.gameObject.rotAngle, false);
+                spawnBullet(chunk, get_x(playerShip), get_y(playerShip), playerShip.gameObject.rotAngle, true);
             }
             break;
         case "ArrowUp":
@@ -113,7 +116,7 @@ function handleKeyUpEvent(event: KeyboardEvent): void {
 }
 
 //simulates what happens in the world.
-function simulate(planets: List<planet>, bullets: List<bullet>): void{
+function simulate(planets: List<planet>, bullets: List<bullet>, turrets: List<turret>): void{
     moveAll(worldChunks, bullets);
     change_location(playerShip,
         get_x(playerShip) + playerShip.xVel, 
@@ -124,9 +127,27 @@ function simulate(planets: List<planet>, bullets: List<bullet>): void{
     //checks collision for each bullet
     let newBulletList = bullets;
     while(!is_null(newBulletList)){
-        const bullet = head(newBulletList)
+        const bullet = head(newBulletList);
         if(null != collisionForEach(bullet, planets)){
             removeBullet(worldChunks, bullet)
+        }
+        if(bullet.friendly){
+            const turret = <turret> collisionForEach(bullet, turrets);
+            if(null != turret){
+                removeBullet(worldChunks, bullet);
+                removeTurret(turret, worldChunks);
+            }
+        } else {
+            if(collision(bullet, playerShip)){
+                playerShip.gameObject.hp -= get_hp(bullet);
+                console.log(get_hp(playerShip));
+                if(get_hp(playerShip) <= 0){
+                    stop = true;
+                    break;
+                } else {
+                    removeBullet(worldChunks, bullet);
+                }
+            }
         }
         newBulletList = tail(newBulletList);
     }
@@ -136,13 +157,15 @@ function simulate(planets: List<planet>, bullets: List<bullet>): void{
 //ticker function. Continously calls upon itself, and
 //draws the world on the website for each tick.
 function ticker(): void{
-    if(pause){
-        shipChunkX = chunkX(get_x(playerShip));
-        shipChunkY = chunkY(get_y(playerShip));
+    if(!pause){
+        shipChunkX = calc_chunkX(get_x(playerShip));
+        shipChunkY = calc_chunkY(get_y(playerShip));
         generatePlayerWorld(worldChunks, shipChunkX, shipChunkY);
         const surroundingPlanets = gatherPlanetList(worldChunks, shipChunkX, shipChunkY);
+        const surroundingTurrets = gatherTurretList(surroundingPlanets);
+        shootTurrets(worldChunks, surroundingTurrets, playerShip);
         const surroundingBullets = gatherBulletList(worldChunks, shipChunkX, shipChunkY);
-        simulate(surroundingPlanets, surroundingBullets);
+        simulate(surroundingPlanets, surroundingBullets, surroundingTurrets);
         drawScreen(screen, surroundingPlanets, surroundingBullets, playerShip);
         const output = document.getElementById('output') as HTMLParagraphElement; 
         output.innerHTML = printer(screen);

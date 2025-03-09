@@ -1,8 +1,9 @@
 import { append, head, is_null, pair, remove, tail } from "../lib/list.js";
-import { get_chunkY, get_chunkX as get_chunkX, get_x, get_y, chunkY, chunkX, createGameobject, change_location } from "./generalFunction.js";
+import { get_chunkY, get_chunkX as get_chunkX, get_x, get_y, calc_chunkY, calc_chunkX, createGameobject, change_location } from "./generalFunction.js";
 import { getChunk } from "./planet.js";
 const liftime = 100;
-const speed = 2; // bullet speed
+const speed = 1; // bullet speed
+const bulletDamage = 5;
 export function moveAll(world, bulletList) {
     while (!is_null(bulletList)) {
         const bullet = head(bulletList);
@@ -11,25 +12,26 @@ export function moveAll(world, bulletList) {
     }
 }
 function moveBullet(world, bullet) {
-    const location = bullet.gameObject.location;
-    const newX = head(location) + bullet.xVel;
-    const newY = tail(location) + bullet.yVel;
+    const newX = get_x(bullet) + bullet.xVel;
+    const newY = get_y(bullet) + bullet.yVel;
     change_location(bullet, newX, newY);
     bullet.lifeTime--;
     if (bullet.lifeTime <= 0) {
         removeBullet(world, bullet);
     }
-    else if (chunkX(newX) != get_chunkX(bullet) || chunkY(newY) != get_chunkY(bullet)) {
+    if (calc_chunkX(newX) != get_chunkX(bullet) || calc_chunkY(newY) != get_chunkY(bullet)) {
         changeBulletChunk(world, bullet);
     }
 }
-export function spawnBullet(chunk, x, y, angle, enemy) {
-    const newBullet = createBullet(x, y, Math.cos(angle) * speed, Math.sin(angle) * speed, "*", enemy);
+export function spawnBullet(chunk, x, y, angle, friendly) {
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    const newBullet = createBullet(x, y, cos * speed, sin * speed, "*", friendly);
     chunk.bullets = pair(newBullet, chunk.bullets);
 }
 function createBullet(x, y, xVel, yVel, sprite, enemy) {
-    return { tag: "bullet", team: enemy,
-        gameObject: createGameobject(x, y, 0.5, 1, "*"),
+    return { tag: "bullet", friendly: enemy,
+        gameObject: createGameobject(x, y, 0.2, bulletDamage, "*"),
         xVel: xVel, yVel: yVel, lifeTime: liftime };
 }
 /**
@@ -62,8 +64,8 @@ export function removeBullet(world, bullet) {
     }
 }
 export function addBullet(world, bullet) {
-    const newChunkX = chunkX(get_x(bullet));
-    const newChunkY = chunkY(get_y(bullet));
+    const newChunkX = calc_chunkX(get_x(bullet));
+    const newChunkY = calc_chunkY(get_y(bullet));
     const chunk = getChunk(world, newChunkX, newChunkY);
     bullet.gameObject.chunkX = newChunkX;
     bullet.gameObject.chunkY = newChunkY;

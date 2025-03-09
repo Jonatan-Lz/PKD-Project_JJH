@@ -1,11 +1,12 @@
 import { createGameobject } from "./generalFunction.js";
-const accel = 0.018; //acceleration suggested 4.5% of maxVel
+const accel = 0.022; //acceleration suggested 5% of maxVel
 const deAccel = 0.018; //deacceleration suggested 4.5% of maxVel
 const maxVel = 0.4;
 const minVel = 0.01; //when changing dir min value for complete switch in dir
 // suggested 2.5% of maxVel (Shuold always be lower then accel)
 const aimSpeed = 0.1;
 const dirDeviation = 0.03; // acceptable range of deviation for sprite change
+const hp = 20;
 /**
  * Creates and returns a ship with given parameters:
  * @param hitboxRad hitbox radius
@@ -15,9 +16,9 @@ const dirDeviation = 0.03; // acceptable range of deviation for sprite change
  * @param hp health of ship
  * @returns created ship
  */
-export function createShip(hitboxRad, x, y, sprite, hp) {
+export function createShip(hitboxRad, x, y, sprite) {
     return { tag: "ship",
-        gameObject: createGameobject(x, y, 0.5, 100, "A"),
+        gameObject: createGameobject(x, y, 0.5, hp, "A"),
         xVel: 0, yVel: 0 };
 }
 /**
