@@ -1,5 +1,5 @@
 import { createGameobject } from "./generalFunction.js";
-const accel = 0.022; //acceleration suggested 5% of maxVel
+const accel = 0.022; //acceleration suggested 5.5% of maxVel
 const deAccel = 0.018; //deacceleration suggested 4.5% of maxVel
 const maxVel = 0.4;
 const minVel = 0.01; //when changing dir min value for complete switch in dir

@@ -1,4 +1,4 @@
-import { head, is_null, tail } from "../lib/list.js";
+import { head, is_null, tail, remove } from "../lib/list.js";
 import { gatherBulletList, moveAll, removeBullet, spawnBullet } from "./bullet.js";
 import { createScreen, drawScreen, printer } from "./drawScreen.js";
 import { change_location, calc_chunkX, calc_chunkY, collision, collisionForEach, get_x, get_y, get_hp } from "./generalFunction.js";
@@ -121,6 +121,7 @@ function simulate(planets, bullets, turrets) {
             if (null != turret) {
                 removeBullet(worldChunks, bullet);
                 removeTurret(turret, worldChunks);
+                turrets = remove(turret, turrets);
             }
         }
         else {

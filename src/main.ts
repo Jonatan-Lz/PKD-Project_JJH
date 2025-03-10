@@ -130,6 +130,7 @@ function simulate(planets: List<planet>, bullets: List<bullet>, turrets: List<tu
             if(null != turret){
                 removeBullet(worldChunks, bullet);
                 removeTurret(turret, worldChunks);
+                turrets = remove(turret, turrets);
             }
         } else {
             if(collision(bullet, playerShip)){
