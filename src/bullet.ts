@@ -5,7 +5,7 @@ import { bullet, chunk, world, chunkSize, generalObject} from "./types.js";
 
 const liftime = 100;
 const speed = 1; // bullet speed
-const bulletDamage = 5;
+const bulletDamage = 1;
 
 export function moveAll(world: world, bulletList: List<bullet>): void{
     while(!is_null(bulletList)){

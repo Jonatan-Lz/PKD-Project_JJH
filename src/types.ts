@@ -14,7 +14,7 @@ export type gameObject = {
 };
 export type world = {[key: string]: chunk}; // refer to a specific chunk by "x,y"
 export type chunk = {planets: List<planet>, bullets: List<bullet>, turrets: List<turret>};
-export type ship = {tag: "ship", gameObject: gameObject, xVel: number, yVel: number};
+export type ship = {tag: "ship", gameObject: gameObject, xVel: number, yVel: number, score: number};
 export type turret = {tag: "turret", gameObject: gameObject, cooldown: number, planet: planet};
 export type bullet = {tag: "bullet", friendly: boolean, gameObject: gameObject, 
                xVel: number, yVel: number, lifeTime: number};

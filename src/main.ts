@@ -6,16 +6,10 @@ import { createPlanet, addTurretToPlanet, gatherPlanetList, generatePlayerWorld,
 import { createShip, ship_rotation_sprite, movement , aimShipTurret} from "./ship.js";
 import { bullet, world, planet, ship, keys_pressed, turret} from "./types.js";
 
-const randomassplanet: planet = addTurretToPlanet({tag: "planet",
-                                gameObject: createGameobject(-25, -10, 8, 1, "O"),
-                                radius: 8,
-                                turrets: list()
-})
-
 //creates a screen
 const screen = createScreen(105, 50);
 //makes the ship!
-let playerShip: ship = createShip(0.5, 0, 0, "A");
+export let playerShip: ship = createShip(0.5, 0, 0, "A");
 //ships current chunks x pos
 let shipChunkX: number = 0;
 //ships current chunks y pos

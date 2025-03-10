@@ -102,6 +102,23 @@ export function drawScreen(screen, planetList, bulletList, ship) {
     }
     drawString(screen, halfWidth, halfHeight, get_sprite(ship));
     aim_ship(screen, ship, halfWidth, halfHeight);
+    function displayScore(x, y, score) {
+        drawString(screen, x, y, "S");
+        drawString(screen, x + 1, y, "C");
+        drawString(screen, x + 2, y, "O");
+        drawString(screen, x + 3, y, "R");
+        drawString(screen, x + 4, y, "E");
+        drawString(screen, x + 5, y, ":");
+        drawString(screen, x + 7, y, "" + score);
+    }
+    displayScore(1, 1, ship.score);
+    function displayPlayerHP(x, y, HP) {
+        drawString(screen, x, y, "H");
+        drawString(screen, x + 1, y, "P");
+        drawString(screen, x + 2, y, ":");
+        drawString(screen, x + 4, y, "" + HP);
+    }
+    displayPlayerHP(1, 3, ship.gameObject.hp);
 }
 export function aim_ship(screen, ship, width, height) {
     const angle = ship.gameObject.rotAngle;

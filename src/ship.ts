@@ -9,7 +9,7 @@ const minVel = 0.01 //when changing dir min value for complete switch in dir
 // suggested 2.5% of maxVel (Shuold always be lower then accel)
 const aimSpeed = 0.1;
 const dirDeviation = 0.03 // acceptable range of deviation for sprite change
-const hp = 20;
+const hp = 4;
 
 /**
  * Creates and returns a ship with given parameters:
@@ -23,7 +23,8 @@ const hp = 20;
 export function createShip(hitboxRad: number, x: number, y: number, sprite: string): ship{
     return {tag: "ship", 
             gameObject: createGameobject(x, y, 0.5, hp, "A"),
-            xVel: 0, yVel: 0};
+            xVel: 0, yVel: 0, 
+            score: 0};
 }
 
 /**

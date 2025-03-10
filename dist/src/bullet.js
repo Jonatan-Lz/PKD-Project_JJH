@@ -3,7 +3,7 @@ import { get_chunkY, get_chunkX as get_chunkX, get_x, get_y, calc_chunkY, calc_c
 import { getChunk } from "./planet.js";
 const liftime = 100;
 const speed = 1; // bullet speed
-const bulletDamage = 5;
+const bulletDamage = 1;
 export function moveAll(world, bulletList) {
     while (!is_null(bulletList)) {
         const bullet = head(bulletList);
