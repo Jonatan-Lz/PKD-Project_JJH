@@ -2,6 +2,7 @@ import { chunkSize } from "./types.js";
 import { append, head, is_null, list, pair, remove, tail } from "../lib/list.js";
 import { createGameobject, minDistCollisionForEach, get_x, get_y, get_chunkX, get_chunkY, calc_chunkX, calc_chunkY } from "./generalFunction.js";
 import { spawnBullet } from "./bullet.js";
+import { playerShip } from "./main.js";
 const amount = 5; //number of planets in a chunk
 const minSize = 4; //Planets min size
 const maxSize = 10; // planets max size
@@ -202,6 +203,7 @@ function generatePlanetList(planets, xOffset, yOffset) {
 export function blowUpPlanet(planet, world) {
     const chunk = getChunk(world, get_chunkX(planet), get_chunkY(planet));
     if (chunk != undefined) {
+        playerShip.score++;
         chunk.planets = remove(planet, chunk.planets);
     }
 }

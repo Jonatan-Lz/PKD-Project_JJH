@@ -1,18 +1,13 @@
-import { head, is_null, list, tail } from "../lib/list.js";
+import { head, is_null, tail } from "../lib/list.js";
 import { gatherBulletList, moveAll, removeBullet, spawnBullet } from "./bullet.js";
 import { createScreen, drawScreen, printer } from "./drawScreen.js";
-import { change_location, calc_chunkX, calc_chunkY, collision, collisionForEach, createGameobject, get_x, get_y, get_hp } from "./generalFunction.js";
-import { addTurretToPlanet, gatherPlanetList, generatePlayerWorld, getChunk, gatherTurretList, shootTurrets, removeTurret } from "./planet.js";
+import { change_location, calc_chunkX, calc_chunkY, collision, collisionForEach, get_x, get_y, get_hp } from "./generalFunction.js";
+import { gatherPlanetList, generatePlayerWorld, getChunk, gatherTurretList, shootTurrets, removeTurret } from "./planet.js";
 import { createShip, ship_rotation_sprite, movement, aimShipTurret } from "./ship.js";
-const randomassplanet = addTurretToPlanet({ tag: "planet",
-    gameObject: createGameobject(-25, -10, 8, 1, "O"),
-    radius: 8,
-    turrets: list()
-});
 //creates a screen
 const screen = createScreen(105, 50);
 //makes the ship!
-let playerShip = createShip(0.5, 0, 0, "A");
+export let playerShip = createShip(0.5, 0, 0, "A");
 //ships current chunks x pos
 let shipChunkX = 0;
 //ships current chunks y pos
