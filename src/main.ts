@@ -1,4 +1,4 @@
-import { for_each, head, is_null, list, List, tail, pair } from "../lib/list.js";
+import { for_each, head, is_null, list, List, tail, pair, remove } from "../lib/list.js";
 import { gatherBulletList, moveAll, removeBullet, spawnBullet } from "./bullet.js";
 import { createScreen, drawScreen, printer} from "./drawScreen.js";
 import { change_location, calc_chunkX, calc_chunkY, collision, collisionForEach, createGameobject, get_x, get_y, get_hp } from "./generalFunction.js";

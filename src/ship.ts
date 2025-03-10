@@ -2,14 +2,14 @@ import { keys_pressed, ship, screen } from "./types.js";
 import { Pair, pair } from "../lib/list.js";
 import { createGameobject, get_x, get_y } from "./generalFunction.js";
 import { drawString } from "./drawScreen.js"
-const accel = 0.022; //acceleration suggested 5% of maxVel
-const deAccel = 0.018 //deacceleration suggested 4.5% of maxVel
-const maxVel = 0.4
-const minVel = 0.01 //when changing dir min value for complete switch in dir
+const accel: number = 0.022; //acceleration suggested 5.5% of maxVel
+const deAccel: number = 0.018 //deacceleration suggested 4.5% of maxVel
+const maxVel: number = 0.4
+const minVel: number = 0.01 //when changing dir min value for complete switch in dir
 // suggested 2.5% of maxVel (Shuold always be lower then accel)
-const aimSpeed = 0.1;
-const dirDeviation = 0.03 // acceptable range of deviation for sprite change
-const hp = 20;
+const aimSpeed: number = 0.1;
+const dirDeviation: number = 0.03 // acceptable range of deviation for sprite change
+const hp: number = 20;
 
 /**
  * Creates and returns a ship with given parameters:
