@@ -3,8 +3,8 @@ import{ planet, screen, ship, bullet, world } from "./types.js"
 import{ get_x, get_y, get_sprite } from "./generalFunction.js"
 
 /**
- * Creates and returns an empty world
- * @returns an empty world
+ * Creates and returns an empty screen
+ * @returns an empty screen
  */
 export function createScreen(width: number, height: number): screen {
     let screen: screen = [[]];
