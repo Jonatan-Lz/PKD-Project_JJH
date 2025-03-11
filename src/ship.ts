@@ -85,9 +85,10 @@ export function movement(keys: keys_pressed, ship: ship): void{
     }
 }
 
-//checks velocity and changes ship sprite depending on it
-//(this function looks so incredibly bad)
-//((how the fuck do i make switch cases with two variables????))
+/**
+ * Changes the sprite of the ship depending on which way its going.
+ * @param ship ship to change sprite
+ */
 export function ship_rotation_sprite(ship: ship): void {
     const xVel: number = ship.xVel;
     const yVel: number = ship.yVel;

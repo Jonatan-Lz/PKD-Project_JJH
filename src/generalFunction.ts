@@ -93,23 +93,36 @@ export function change_location(object: generalObject, x: number, y: number): vo
 export function get_sprite(object: generalObject): string{
     return object.gameObject.sprite
 } 
+
+//get an objects x - coordinate of chunk
 export function get_chunkX(object: generalObject): number{
     return object.gameObject.chunkX;
 }
 
-//gets y-coordinate of object
+//get an objects y - coordinate of chunk
 export function get_chunkY(object: generalObject): number{
     return object.gameObject.chunkY;
 }
 
+/**
+ * Creates and returns a gameObject with given parameters
+ * @param x x - coordinate
+ * @param y y - coordinate
+ * @param radius radius
+ * @param hp health
+ * @param sprite sprite
+ * @returns {gameObject} a gameObject
+ */
 export function createGameobject(x: number, y:number, radius: number, hp: number, sprite: string): gameObject{
     return {color: null, location: pair(x, y), hitbox: radius, rotAngle: 0, hp, sprite, chunkX: calc_chunkX(x), chunkY: calc_chunkY(y)}
 }
 
+//calculates the x-chunk
 export function calc_chunkX(x: number): number{
     return Math.floor(x/chunkSize);
 }
 
+//calculates the y-chunk
 export function calc_chunkY(y: number): number{
     return Math.floor(y/chunkSize);
 }

@@ -7,6 +7,11 @@ const liftime = 100;
 const speed = 1; // bullet speed
 const bulletDamage = 1;
 
+/**
+ * Moves bullets in designated world
+ * @param world World to move objects in
+ * @param bulletList Bullets to move
+ */
 export function moveAll(world: world, bulletList: List<bullet>): void{
     while(!is_null(bulletList)){
         const bullet = head(bulletList);
@@ -15,6 +20,11 @@ export function moveAll(world: world, bulletList: List<bullet>): void{
     }
 }
 
+/**
+ * Calculates and moves a bullet in a world
+ * @param world World to move bullet in
+ * @param bullet Designated bullet to move
+ */
 function moveBullet(world: world, bullet: bullet): void{
     const newX = get_x(bullet) + bullet.xVel;
     const newY = get_y(bullet) + bullet.yVel;
@@ -28,6 +38,14 @@ function moveBullet(world: world, bullet: bullet): void{
     }
 }
 
+/**
+ * Spawns a bullet in a chunk
+ * @param chunk Chunk to spawn bullet in
+ * @param x x - coordinate of bullet
+ * @param y y - coordinate of bullet
+ * @param angle What angle the bullets going
+ * @param friendly If its on your team or not (true if on your team)
+ */
 export function spawnBullet(chunk: chunk, x: number, y: number, angle: number, friendly: boolean): void{
     const cos = Math.cos(angle);
     const sin = Math.sin(angle);
@@ -35,6 +53,16 @@ export function spawnBullet(chunk: chunk, x: number, y: number, angle: number, f
     chunk.bullets = pair(newBullet, chunk.bullets);
 }
 
+/**
+ * Creates and returns a bullet
+ * @param x x - coordinate of bullet
+ * @param y y - coordinate of bullet
+ * @param xVel x - velocity of bullet
+ * @param yVel y - velocity of bullet
+ * @param sprite sprite of bullet
+ * @param enemy if its an enemy or not
+ * @returns {bullet} bullet
+ */
 function createBullet(x:number, y:number, xVel:number, yVel:number, sprite:string, enemy: boolean): bullet{
     return {tag: "bullet", friendly: enemy,
             gameObject: createGameobject(x, y, 0.2, bulletDamage, "*"), 
@@ -61,11 +89,21 @@ export function gatherBulletList(world: world, x: number, y: number): List<bulle
     return bulletList;
 }
 
+/**
+ * Changes the chunk of a bullet
+ * @param world World to change the bullets chunk in
+ * @param bullet bullet to change chunk
+ */
 export function changeBulletChunk(world: world, bullet: bullet): void{
     removeBullet(world, bullet);
     addBullet(world, bullet)
 }
 
+/**
+ * deletes a bullet from a world
+ * @param world world that bullets in
+ * @param bullet designated bullet
+ */
 export function removeBullet(world: world, bullet: bullet): void{
     const chunk = getChunk(world, get_chunkX(bullet), get_chunkY(bullet));
     if(chunk != undefined){
@@ -73,6 +111,11 @@ export function removeBullet(world: world, bullet: bullet): void{
     }
 }
 
+/**
+ * Adds a bullet into a world
+ * @param world world to add bullet into
+ * @param bullet bullet to add
+ */
 export function addBullet(world: world, bullet: bullet): void{
     const newChunkX = calc_chunkX(get_x(bullet));
     const newChunkY = calc_chunkY(get_y(bullet));

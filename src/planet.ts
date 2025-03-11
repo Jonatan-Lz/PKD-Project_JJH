@@ -122,6 +122,11 @@ export function generatePlayerWorld(world: world, x: number, y: number): void{
     }
 }
 
+/**
+ * Removes a turret from a given world
+ * @param turret turret to remove
+ * @param world world to remove turret from
+ */
 export function removeTurret(turret:turret, world:world): void{
     const planet = turret.planet;
     planet.turrets = remove(turret, planet.turrets);
@@ -211,7 +216,11 @@ function generatePlanetList(planets: List<planet>, xOffset: number, yOffset: num
     return planetList;
 }
 
-//destoys a planet
+/**
+ * Blows up and deletes a planet from a world
+ * @param planet planet to blow up
+ * @param world world that planet is in
+ */
 export function blowUpPlanet(planet:planet, world: world) {
     const chunk = getChunk(world, get_chunkX(planet), get_chunkY(planet));
     if(chunk != undefined) {

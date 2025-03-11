@@ -23,7 +23,10 @@ export function createScreen(width: number, height: number): screen {
     return screen;
 }
 
-//clears the screen (turns each index to "_")
+/**
+ * Clears a screen (turns each index to "_")
+ * @param screen Screen to clear
+ */
 function clearScreen(screen: screen): void{
     for(let y = 0; y < screen.length; y++){
         for(let x = 0; x < screen[y].length; x++){
@@ -67,6 +70,13 @@ function drawCircle(screen: screen, radius: number, x: number, y: number, sprite
 }
 
 //writes the sprite on designated coordinates, on given world.
+/**
+ * Writes a sprite on the designated coordinates, on the given screen
+ * @param screen screen to write on
+ * @param x x - coordinate of sprite
+ * @param y y - coordinate of sprite
+ * @param sprite sprite to write
+ */
 export function drawString(screen: screen, x: number, y: number, sprite: string): void{
     if(screen[Math.floor(y)] != undefined && screen[Math.floor(y)][Math.floor(x)] != undefined){
         screen[Math.floor(y)][Math.floor(x)] = sprite;
@@ -74,9 +84,10 @@ export function drawString(screen: screen, x: number, y: number, sprite: string)
 }
 
 /**
- * Redraws the world based on the parameters given
- * @param screen world to draw
- * @param planetList planets to put on the world
+ * Redraws the screen based on the parameters given
+ * @param screen screen to draw
+ * @param planetList planets to put on the screen
+ * @param bulletList bullets to draw on the screen
  * @param ship the ship
  */
 export function drawScreen(screen: screen, planetList: List<planet>, bulletList: List<bullet>, ship: ship): void{
@@ -136,6 +147,13 @@ export function drawScreen(screen: screen, planetList: List<planet>, bulletList:
     displayPlayerHP(1, 3, ship.gameObject.hp);
 }
 
+/**
+ * Makes a small cursor for the ship to aim with
+ * @param screen screen to draw on
+ * @param ship ship to give cursor
+ * @param width width of screen
+ * @param height height of screen
+ */
 export function aim_ship(screen: screen, ship: ship, width: number, height:number){
     const angle = ship.gameObject.rotAngle;
     for(let i = 3; i <= 9; i += 3){
