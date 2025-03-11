@@ -117,12 +117,12 @@ export function createGameobject(x: number, y:number, radius: number, hp: number
     return {color: null, location: pair(x, y), hitbox: radius, rotAngle: 0, hp, sprite, chunkX: calc_chunkX(x), chunkY: calc_chunkY(y)}
 }
 
-//calculates the x-chunk
+//returns the x-coordinate of a chunk, with given x-coordinate
 export function calc_chunkX(x: number): number{
     return Math.floor(x/chunkSize);
 }
 
-//calculates the y-chunk
+//returns the y-coordinate of a chunk, with given y-coordinate
 export function calc_chunkY(y: number): number{
     return Math.floor(y/chunkSize);
 }
